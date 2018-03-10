@@ -14,46 +14,46 @@ public class MonotonePartition {
 	{
 
 		//Default PQ capacity is 11
-		PriorityQueue<Vertex> Q = new PriorityQueue<Vertex>(11, new MonotoneVertexComparator());
+		PriorityQueue<Node> Q = new PriorityQueue<Node>(11, new MonotoneVertexComparator());
 
 		DCEL_Edge cur_edge = polygon.rep_edge();
 		do
 		{
-			Q.add()
-		}while(cur_edge.next().id() != polygon.rep_edge().id())
+			Q.add(cur_edge.origin());
+			cur_edge = cur_edge.next();
+		}while(cur_edge.id() != polygon.rep_edge().id())
 		
 		// Initializing the binary tree
-		TreeMap<Integer, Edge> T = new TreeMap<Integer, Edge>();
+		this.Partition = new ArrayList<DoublyConnectedEdgeList>();
+		this.Trapezoidalization = new ArrayList<Edge>();
 		
-		// Partitioning as set of diagonals
-		ArrayList<Diagonal> D = new ArrayList<Diagonal>();
+		TreeSet<DCEL_Edge> T = new TreeSet<DCEL_Edge>(new MonotoneEdgeComparator());
+		
+		// Partitioning as se1t of diagonals
+		// ArrayList<Diagonal> D = new ArrayList<Diagonal>();
 		
 		// Handling vertices
 		while (! Q.isEmpty()) {
 			try {
-				handleVertex(Q.poll(), T, D);
+				handleVertex(Q.poll(), T);
 			} catch(Exception e) {
 				System.out.print("!");
 			}
 		}
-		
-		return D;
 	}
 	
 	/*private static ArrayList<Triangle> triangulateMonotonePolygon(Polygon p) {
 		
 	}*/
 	
-	private static void handleVertex(Vertex v_i, TreeMap<Integer, Edge> T,
-													ArrayList<Diagonal> D) {
+	private static void handleVertex(Node cur_node, TreeSet<DCEL_Edge> T) {
 		
-		int i = v_i.getIndex();
-		int i_1 = (i == 0) ? (v_i.getPolygon().size()-1) : (i-1);
-		
+		Node prev_node = cur_node.nextInteriorEdge().prev().origin();
+
 		Edge e_i, e_j, e_i_1, temp;
-		Vertex helper_e_i_1, helper_e_j;
+		Node helper_e_i_1, helper_e_j;
 		
-		switch (v_i.getVertexType()) {
+		switch (cur_node.getVertexType()) {
 			
 			case START:
 				e_i = new Edge(v_i.getPolygon(), i);
@@ -189,9 +189,9 @@ public class MonotonePartition {
 		MERGE
 	}
 	
-	static class Vertex {
+	static class Node {
 		
-		public Vertex(Polygon p, int i) {
+		public Node(Polygon p, int i) {
 			polygon = p;
 			index = i;
 		}
@@ -262,11 +262,11 @@ public class MonotonePartition {
 			index = i;
 		}
 		
-		public void setHelper(Vertex v) {
+		public void setHelper(Node v) {
 			helper = v;
 		}
 		
-		public Vertex getHelper() {
+		public Node getHelper() {
 			return helper;
 		}
 		
@@ -274,12 +274,12 @@ public class MonotonePartition {
 			return index;
 		}
 		
-		public Vertex getA() {
-			return new Vertex(polygon, index);
+		public Node getA() {
+			return new Node(polygon, index);
 		}
 		
-		public Vertex getB() {
-			return new Vertex(polygon, (index+1)%polygon.size());
+		public Node getB() {
+			return new Node(polygon, (index+1)%polygon.size());
 		}
 		
 		public boolean intersectsWithSweepLine(double sweepY) {
@@ -296,12 +296,12 @@ public class MonotonePartition {
 			return this.getLine().XforY(Y) > e.getLine().XforY(Y);
 		}
 		
-		public boolean liesOnTheLeftSideof(Vertex v) {
+		public boolean liesOnTheLeftSideof(Node v) {
 			return this.getLine().XforY(v.getY()) < v.getX();
 		}
 		
 		private Polygon polygon;		
-		private Vertex helper;
+		private Node helper;
 		private int index;
 	}
 
@@ -324,14 +324,48 @@ public class MonotonePartition {
 	}
 	}
 
-	static class MonotoneVertexComparator implements Comparator<Vertex> {
+	static class MonotoneVertexComparator implements Comparator<Node> {
 
 		@Override
-		public int compare(Vertex v1, Vertex v2) {
+		public int compare(Node v1, Node v2) {
 			if (v1.y > v2.y || v1.y == v2.y && v1.x > v2.x)
 				return -1;
 			else 
 				return 1;
+		}
+	}
+	static class MonotoneEdgeComparator implements Comparator<DCEL_Edge> {
+
+		@Override
+		public int compare(DCEL_Edge e1, DCEL_Edge e2) {
+			Node top1 = e1.getNode(true), bot1 = e1.getNode(false);
+			Node top2 = e2.getNode(true), bot2 = e2.getNode(false);
+			int mul = 1;
+			if(top1.y()>top2.y())
+			{
+				mul = -1;
+
+				Node t = top1;
+				top1 = top2;
+				top2 = t;
+
+				t = bot1;
+				bot1 = bot2;
+				bot2 = t;
+			}
+
+			double midx = top2.x() + (bot2.x()-top2.x())*(top2.y()-top1.y())/(top2.y()-bot2.y());
+
+			if(Math.abs(midx - top1.x()) < 0.00001)
+			{
+				if(bot1.x() > bot2.x())	return -1*mul;
+				return mul;
+			}
+
+			if (midx > top1.x())
+				return -1*mul;
+			else 
+				return mul;
 		}
 	}
 }

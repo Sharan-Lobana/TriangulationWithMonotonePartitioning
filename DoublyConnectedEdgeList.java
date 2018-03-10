@@ -187,8 +187,10 @@ public class DoublyConnectedEdgeList {
     //   ArrayList<DoublyConnectedEdgeList> new_DCELs;
     // }
 
+    //TODO: add code for nextInteriorEdge
     public class Node {
-
+        private double x,y;
+        private DCEL_Edge nextInteriorEdge;
         private int id;
 
         public Node() {
@@ -199,9 +201,23 @@ public class DoublyConnectedEdgeList {
           this.id = id;
         }
 
+        public double x() {
+          return this.x;
+        }
+
+        public double y() {
+          return this.y;
+        }
+
+        public DCEL_Edge nextInteriorEdge() {
+          return this.nextInteriorEdge;
+        }
+
         public int id() {
           return this.id;
         }
+
+        
 
         public void setID(int id) {
           this.id = id;
@@ -218,14 +234,17 @@ public class DoublyConnectedEdgeList {
       private DCEL_Face face;
       private int id;
       private boolean is_counter_clock;
+      private Node helper;
 
       public DCEL_Edge() {
         this.origin = null;
         this.next = null;
+        this.prev = null;
         this.twin = null;
         this.face = null;
         this.id = 0;
         this.is_counter_clock = true;
+        this.helper = null;
       }
 
       public DCEL_Edge(int id) {
@@ -274,7 +293,9 @@ public class DoublyConnectedEdgeList {
       public boolean isCounterClock() {
         return this.is_counter_clock;
       }
-
+      public Node helper() {
+        return this.helper;
+      }
       public void setOrigin(Node origin) {
         this.origin = origin;
       }
@@ -301,6 +322,21 @@ public class DoublyConnectedEdgeList {
 
       public void setCounterClock(boolean is_counter_clock) {
         this.is_counter_clock = is_counter_clock;
+      }
+
+      public void setHelper(Node h) {
+        this.helper = h;
+      }
+
+      public Node getNode(boolean isTop)
+      {
+        if(this.origin().y() > this.next().origin().y())
+        {
+          if(isTop) return this.origin();
+          return this.next().origin();
+        }
+        if(isTop) return this.next().origin();
+        return this.origin();
       }
 
     }

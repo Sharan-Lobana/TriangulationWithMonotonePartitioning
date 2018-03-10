@@ -170,6 +170,19 @@ public class DoublyConnectedEdgeList {
 
     }
 
+    public void printInterior() {
+      System.out.println("Printing interior cycle of dcel with id: "+Integer.toString(this.id));
+      System.out.println("Face id: "+Integer.toString(this.rep_edge().face().id()));
+      DCEL_Edge temp = this.rep_edge();
+      DCEL_Edge temp2 = temp;
+      System.out.print("Edge Cycle is: "+Integer.toString(temp2.origin.id())+"--("+Integer.toString(temp2.id())+")-->");
+      temp2 = temp2.next();
+      while(temp2.id() != temp.id()) {
+        System.out.print(Integer.toString(temp2.origin.id())+"--("+Integer.toString(temp2.id)+")-->");
+        temp2 = temp2.next();
+      }
+      System.out.println(Integer.toString(temp.origin.id()));
+    }
     // public ArrayList<DoublyConnectedEdgeList> connect(Node a, Node b, double id1, double id2) {
     //   ArrayList<DoublyConnectedEdgeList> new_DCELs;
     // }
@@ -294,22 +307,22 @@ public class DoublyConnectedEdgeList {
 
     public class DCEL_Face {
 
-      private double id;
+      private int id;
       public static final int INF = 1000000;
 
       public DCEL_Face() {
         this.id = 0;  //id of the face
       }
 
-      public DCEL_Face(double id) {
+      public DCEL_Face(int id) {
         this.id = id;
       }
 
-      public double id() {
+      public int id() {
         return this.id;
       }
 
-      public void setID(double id) {
+      public void setID(int id) {
         this.id = id;
       }
 

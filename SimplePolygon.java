@@ -68,6 +68,11 @@ public class SimplePolygon {
 		long end_time=System.currentTimeMillis();
 		System.out.println("Time taken = "+(end_time-start_time));
 
+		ArrayList<Integer> nodes = new ArrayList<Integer>();
+		for(i = 1; i <= n; i++)
+			nodes.add(vertices[i].index);
+		DoublyConnectedEdgeList dcel = new DoublyConnectedEdgeList(nodes,1,1);
+		dcel.printInterior();
 		DrawGraph mainPanel = new DrawGraph(vertices,n);
 		JFrame frame = new JFrame("DrawGraph");
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

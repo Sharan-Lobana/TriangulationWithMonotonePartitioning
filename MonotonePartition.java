@@ -2,7 +2,7 @@
 import java.util.ArrayList;
 
 public class MonotonePartition {
-	private ArrayList<DoublyConnectedEdgeList> Partition;
+	private TreeMap<Integer,DoublyConnectedEdgeList> Partition;
 	private ArrayList<Edge> Trapezoidalization;
 
 	public MonotonePartition() {
@@ -12,7 +12,6 @@ public class MonotonePartition {
 
 	public MonotonePartition(DoublyConnectedEdgeList polygon)
 	{
-
 		//Default PQ capacity is 11
 		PriorityQueue<Node> Q = new PriorityQueue<Node>(11, new MonotoneVertexComparator());
 
@@ -24,18 +23,21 @@ public class MonotonePartition {
 		}while(cur_edge.id() != polygon.rep_edge().id())
 		
 		// Initializing the binary tree
-		this.Partition = new ArrayList<DoublyConnectedEdgeList>();
+		this.Partition = new TreeMap<Integer,DoublyConnectedEdgeList>();
+		Partition.put(polygon.id(),polygon);
 		this.Trapezoidalization = new ArrayList<Edge>();
 		
 		TreeSet<DCEL_Edge> T = new TreeSet<DCEL_Edge>(new MonotoneEdgeComparator());
-		
+
+		TreeMap<Integer, pair<Node,VertexType> > Helper = new TreeMap<Integer, pair<Node,VertexType> >();
+
 		// Partitioning as se1t of diagonals
 		// ArrayList<Diagonal> D = new ArrayList<Diagonal>();
 		
 		// Handling vertices
 		while (! Q.isEmpty()) {
 			try {
-				handleVertex(Q.poll(), T);
+				handleVertex(Q.poll(), T, Helper);
 			} catch(Exception e) {
 				System.out.print("!");
 			}
@@ -46,141 +48,155 @@ public class MonotonePartition {
 		
 	}*/
 	
-	private static void handleVertex(Node cur_node, TreeSet<DCEL_Edge> T) {
+	private static void handleVertex(Node v_i, TreeSet<DCEL_Edge> T, TreeMap<Integer, Node> Helper) {
 		
-		Node prev_node = cur_node.nextInteriorEdge().prev().origin();
+		// Node prev_node = v_i.IncidentEdge().prev().origin();
 
-		Edge e_i, e_j, e_i_1, temp;
-		Node helper_e_i_1, helper_e_j;
+		// Edge e_i, e_j, e_i_1, temp;
+		// Node helper_e_i_1, helper_e_j;
 		
-		switch (cur_node.getVertexType()) {
+		// switch (v_i.getVertexType()) {
 			
-			case START:
-				e_i = new Edge(v_i.getPolygon(), i);
-				e_i.setHelper(v_i);
-				T.put(i, e_i);
+		// 	case VertexType.START:
+		// 		e_i = new Edge(v_i.getPolygon(), i);
+		// 		e_i.setHelper(v_i);
+		// 		T.put(i, e_i);
 				
-				break;
+		// 		break;
 				
-			case END:
+		// 	case VertexType.END:
 				
-				e_i_1 = T.get(i_1);
+		// 		e_i_1 = T.get(i_1);
 				
-				helper_e_i_1 = e_i_1.getHelper();
-				if (helper_e_i_1.getVertexType() == VertexType.MERGE) {
-					D.add(new Diagonal(i, helper_e_i_1.getIndex()));
-				}
+		// 		helper_e_i_1 = e_i_1.getHelper();
+		// 		if (helper_e_i_1.getVertexType() == VertexType.MERGE) {
+		// 			D.add(new Diagonal(i, helper_e_i_1.getIndex()));
+		// 		}
 				
-				//T.remove(i_1);
+		// 		//T.remove(i_1);
 				
-				break;
+		// 		break;
 				
-			case SPLIT:
-				e_j = null;
-				// TODO: Improve to O(log(n))!
-				for (int j : T.keySet()) {
-					temp = T.get(j);
-					if (temp.intersectsWithSweepLine(v_i.getY()) &&
-							temp.liesOnTheLeftSideof(v_i)) {
-						if (e_j == null) {
-							e_j = temp;
-						} else if (temp.liesOnTheRightSideof(e_j, v_i.getY())) {
-							e_j = temp;
-						}
-					}
-				}
+		// 	case VertexType.SPLIT:
+		// 		e_j = null;
+		// 		// TODO: Improve to O(log(n))!
+		// 		for (int j : T.keySet()) {
+		// 			temp = T.get(j);
+		// 			if (temp.intersectsWithSweepLine(v_i.getY()) &&
+		// 					temp.liesOnTheLeftSideof(v_i)) {
+		// 				if (e_j == null) {
+		// 					e_j = temp;
+		// 				} else if (temp.liesOnTheRightSideof(e_j, v_i.getY())) {
+		// 					e_j = temp;
+		// 				}
+		// 			}
+		// 		}
 				
-				D.add(new Diagonal(i, e_j.getHelper().getIndex()));
+		// 		D.add(new Diagonal(i, e_j.getHelper().getIndex()));
 				
-				e_j.setHelper(v_i);
+		// 		e_j.setHelper(v_i);
 				
-				e_i = new Edge(v_i.getPolygon(), i);
-				T.put(i, e_i);
-				e_i.setHelper(v_i);
+		// 		e_i = new Edge(v_i.getPolygon(), i);
+		// 		T.put(i, e_i);
+		// 		e_i.setHelper(v_i);
 				
-				break;
+		// 		break;
 				
-			case MERGE:
+		// 	case VertexType.MERGE:
 				
-				e_i_1 = T.get(i_1);
-				helper_e_i_1 = e_i_1.getHelper();
+		// 		e_i_1 = T.get(i_1);
+		// 		helper_e_i_1 = e_i_1.getHelper();
 				
-				if (helper_e_i_1.getVertexType() == VertexType.MERGE) {
-					D.add(new Diagonal(i, helper_e_i_1.getIndex()));
-				}
+		// 		if (helper_e_i_1.getVertexType() == VertexType.MERGE) {
+		// 			D.add(new Diagonal(i, helper_e_i_1.getIndex()));
+		// 		}
 				
-				//T.remove(i_1);
+		// 		//T.remove(i_1);
 				
-				e_j = null;
-				// TODO: Improve to O(log(n))!
-				for (int j : T.keySet()) {
-					temp = T.get(j);
-					if (temp.intersectsWithSweepLine(v_i.getY()) &&
-							temp.liesOnTheLeftSideof(v_i)) {
-						if (e_j == null) {
-							e_j = temp;
-						} else if (temp.liesOnTheRightSideof(e_j, v_i.getY())) {
-							e_j = temp;
-						}
-					}
-				}
+		// 		e_j = null;
+		// 		// TODO: Improve to O(log(n))!
+		// 		for (int j : T.keySet()) {
+		// 			temp = T.get(j);
+		// 			if (temp.intersectsWithSweepLine(v_i.getY()) &&
+		// 					temp.liesOnTheLeftSideof(v_i)) {
+		// 				if (e_j == null) {
+		// 					e_j = temp;
+		// 				} else if (temp.liesOnTheRightSideof(e_j, v_i.getY())) {
+		// 					e_j = temp;
+		// 				}
+		// 			}
+		// 		}
 				
-				helper_e_j = e_j.getHelper();
+		// 		helper_e_j = e_j.getHelper();
 				
-				if (helper_e_j.getVertexType() == VertexType.MERGE) {
-					D.add(new Diagonal(i, helper_e_j.getIndex()));
-				}
+		// 		if (helper_e_j.getVertexType() == VertexType.MERGE) {
+		// 			D.add(new Diagonal(i, helper_e_j.getIndex()));
+		// 		}
 				
-				e_j.setHelper(v_i);				
+		// 		e_j.setHelper(v_i);				
 				
-				break;
+		// 		break;
 				
-			case REGULAR:
+		// 	case VertexType.REGULAR:
 				
-				if (v_i.polygonInteriorLiesToTheRight()) {
+		// 		if (v_i.polygonInteriorLiesToTheRight()) {
 					
-					e_i_1 = T.get(i_1);
-					helper_e_i_1 = e_i_1.getHelper();
+		// 			e_i_1 = T.get(i_1);
+		// 			helper_e_i_1 = e_i_1.getHelper();
 
-					if (helper_e_i_1.getVertexType() == VertexType.MERGE) {
-						D.add(new Diagonal(i, helper_e_i_1.getIndex()));
-					}
+		// 			if (helper_e_i_1.getVertexType() == VertexType.MERGE) {
+		// 				D.add(new Diagonal(i, helper_e_i_1.getIndex()));
+		// 			}
 					
-					//T.remove(i_1);
+		// 			//T.remove(i_1);
 					
-					e_i = new Edge(v_i.getPolygon(), i);
-					T.put(i, e_i);
-					e_i.setHelper(v_i);
+		// 			e_i = new Edge(v_i.getPolygon(), i);
+		// 			T.put(i, e_i);
+		// 			e_i.setHelper(v_i);
 					
-				} else {
+		// 		} else {
 					
-					e_j = null;
-					// TODO: Improve to O(log(n))!
-					for (int j : T.keySet()) {
-						temp = T.get(j);
-						if (temp.intersectsWithSweepLine(v_i.getY()) &&
-							temp.liesOnTheLeftSideof(v_i)) {
-							if (e_j == null) {
-								e_j = temp;
-							} else if (temp.liesOnTheRightSideof(e_j, v_i.getY())) {
-								e_j = temp;
-							}
-						}
-					}
+		// 			e_j = null;
+		// 			// TODO: Improve to O(log(n))!
+		// 			for (int j : T.keySet()) {
+		// 				temp = T.get(j);
+		// 				if (temp.intersectsWithSweepLine(v_i.getY()) &&
+		// 					temp.liesOnTheLeftSideof(v_i)) {
+		// 					if (e_j == null) {
+		// 						e_j = temp;
+		// 					} else if (temp.liesOnTheRightSideof(e_j, v_i.getY())) {
+		// 						e_j = temp;
+		// 					}
+		// 				}
+		// 			}
 					
-					helper_e_j = e_j.getHelper();
+		// 			helper_e_j = e_j.getHelper();
 				
-					if (helper_e_j.getVertexType() == VertexType.MERGE) {
-						D.add(new Diagonal(i, helper_e_j.getIndex()));
-					}
+		// 			if (helper_e_j.getVertexType() == VertexType.MERGE) {
+		// 				D.add(new Diagonal(i, helper_e_j.getIndex()));
+		// 			}
 
-					e_j.setHelper(v_i); 
-				}
+		// 			e_j.setHelper(v_i); 
+		// 		}
 				
+		// 		break;
+		// }
+
+		DCEL_Edge e_prev = v_i.IncidentEdge().prev();
+		DCEL_Edge e_next = v_i.IncidentEdge();
+
+		switch (getVertexType(v_i)) {
+			case VertexType.START:
+				DCEL_Edge e_i = v_i.IncidentEdge();
+				T.add(e_i);
+				Helper.put(e_i.id(),new pair<Node,VertexType>(v_i,START));
 				break;
+			case VertexType.END:
+				DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+				if(Helper.get(e_i_1.id()).getKey() == VertexType.MERGE)
+
 		}
-	}
-	
+
 	static enum VertexType {
 		START,
 		END,
@@ -188,122 +204,161 @@ public class MonotonePartition {
 		SPLIT,
 		MERGE
 	}
-	
-	static class Node {
+
+	private VertexType getVertexType(Node cur) {
 		
-		public Node(Polygon p, int i) {
-			polygon = p;
-			index = i;
-		}
-		
-		public int getIndex() {
-			return index;
-		}
-		
-		public double getX() {
-			return polygon.get(index).getX();
-		}
-		
-		public double getY() {
-			return polygon.get(index).getY();
-		}
-		
-		public Polygon getPolygon() {
-			return polygon;
-		}
-		
-		public VertexType getVertexType() {
-			
-			Point pCur = polygon.get(index);
-			Point pPrev = polygon.get(index == 0 ? polygon.size()-1 : index-1);
-			Point pNext = polygon.get((index+1) % polygon.size());
-			
-			if (pPrev.getY() < pCur.getY() &&
-				 pNext.getY() < pCur.getY()) {
-				if (polygon.isConvex(index)) {
-					return VertexType.START;
-				} else {
-					return VertexType.SPLIT;
-				}
-			} else if (pPrev.getY() > pCur.getY() &&
-						pNext.getY() > pCur.getY()) {
-				if (polygon.isConvex(index)) {
-					return VertexType.END;
-				} else {
-					return VertexType.MERGE;
-				}
+		Point prev = cur.IncidentEdge().prev().origin();
+		Point next = cur.IncidentEdge().next().origin();
+
+		if (prev.y() < cur.y() &&
+			 next.y() < cur.y()) {
+			if (isConvex(cur)) {
+				return VertexType.START;
 			} else {
-				return VertexType.REGULAR;
+				return VertexType.SPLIT;
 			}
-		}
-		
-		public boolean polygonInteriorLiesToTheRight() {
-			
-			Point pCur = polygon.get(index);
-			Point pPrev = polygon.get(index == 0 ? polygon.size()-1 : index-1);
-			Point pNext = polygon.get((index+1) % polygon.size());
-			
-			if (pPrev.getY() > pCur.getY() &&
-				 pNext.getY() < pCur.getY()) {
-				return true;
+		} else if (prev.y() > cur.y() &&
+					next.y() > cur.y()) {
+			if (isConvex(cur)) {
+				return VertexType.END;
 			} else {
-				return false;
+				return VertexType.MERGE;
 			}
+		} else {
+			return VertexType.REGULAR;
 		}
-		
-		private Polygon polygon;
-		private int index;
 	}
+
+	private boolean isConvex(Node b)
+	{
+		Node a = b.IncidentEdge().prev().origin();
+		Node c = b.IncidentEdge().next().origin();
+		double th1 = Math.atan2(b.y()-a.y(),b.x()-a.x());
+		double th2 = Math.atan2(c.y()-b.y(),c.x()-b.x());
+		double diff = th2 - th1;
+		if(diff > Math.PI)
+			diff -= 2*Math.PI;
+		if(diff < -Math.PI)
+			diff += 2*Math.PI;
+
+		if(diff > 0)	return true;
+		return false;
+	}
+	// static class Node {
+		
+	// 	public Node(Polygon p, int i) {
+	// 		polygon = p;
+	// 		index = i;
+	// 	}
+		
+	// 	public int getIndex() {
+	// 		return index;
+	// 	}
+		
+	// 	public double getX() {
+	// 		return polygon.get(index).getX();
+	// 	}
+		
+	// 	public double getY() {
+	// 		return polygon.get(index).getY();
+	// 	}
+		
+	// 	public Polygon getPolygon() {
+	// 		return polygon;
+	// 	}
+		
+	// 	public VertexType getVertexType() {
+			
+	// 		Point pCur = polygon.get(index);
+	// 		Point pPrev = polygon.get(index == 0 ? polygon.size()-1 : index-1);
+	// 		Point pNext = polygon.get((index+1) % polygon.size());
+			
+	// 		if (pPrev.getY() < pCur.getY() &&
+	// 			 pNext.getY() < pCur.getY()) {
+	// 			if (polygon.isConvex(index)) {
+	// 				return VertexType.START;
+	// 			} else {
+	// 				return VertexType.SPLIT;
+	// 			}
+	// 		} else if (pPrev.getY() > pCur.getY() &&
+	// 					pNext.getY() > pCur.getY()) {
+	// 			if (polygon.isConvex(index)) {
+	// 				return VertexType.END;
+	// 			} else {
+	// 				return VertexType.MERGE;
+	// 			}
+	// 		} else {
+	// 			return VertexType.REGULAR;
+	// 		}
+	// 	}
+		
+	// 	public boolean polygonInteriorLiesToTheRight() {
+			
+	// 		Point pCur = polygon.get(index);
+	// 		Point pPrev = polygon.get(index == 0 ? polygon.size()-1 : index-1);
+	// 		Point pNext = polygon.get((index+1) % polygon.size());
+			
+	// 		if (pPrev.getY() > pCur.getY() &&
+	// 			 pNext.getY() < pCur.getY()) {
+	// 			return true;
+	// 		} else {
+	// 			return false;
+	// 		}
+	// 	}
+		
+	// 	private Polygon polygon;
+	// 	private int index;
+	// }
 	
-	static class Edge {
+	// static class Edge {
 		
-		public Edge(Polygon p, int i) {
-			polygon = p;
-			index = i;
-		}
+	// 	public Edge(Polygon p, int i) {
+	// 		polygon = p;
+	// 		index = i;
+	// 	}
 		
-		public void setHelper(Node v) {
-			helper = v;
-		}
+	// 	public void setHelper(Node v) {
+	// 		helper = v;
+	// 	}
 		
-		public Node getHelper() {
-			return helper;
-		}
+	// 	public Node getHelper() {
+	// 		return helper;
+	// 	}
 		
-		public int getIndex() {
-			return index;
-		}
+	// 	public int getIndex() {
+	// 		return index;
+	// 	}
 		
-		public Node getA() {
-			return new Node(polygon, index);
-		}
+	// 	public Node getA() {
+	// 		return new Node(polygon, index);
+	// 	}
 		
-		public Node getB() {
-			return new Node(polygon, (index+1)%polygon.size());
-		}
+	// 	public Node getB() {
+	// 		return new Node(polygon, (index+1)%polygon.size());
+	// 	}
 		
-		public boolean intersectsWithSweepLine(double sweepY) {
-			return (sweepY >= getA().getY() && sweepY <= getB().getY()) ||
-					(sweepY >= getB().getY() && sweepY <= getA().getY());
-		}
+	// 	public boolean intersectsWithSweepLine(double sweepY) {
+	// 		return (sweepY >= getA().getY() && sweepY <= getB().getY()) ||
+	// 				(sweepY >= getB().getY() && sweepY <= getA().getY());
+	// 	}
 		
-		public Line getLine() {
-			return new Line(polygon.get(index),
-					polygon.get((index+1)%polygon.size()));
-		}
+	// 	public Line getLine() {
+	// 		return new Line(polygon.get(index),
+	// 				polygon.get((index+1)%polygon.size()));
+	// 	}
 		
-		public boolean liesOnTheRightSideof(Edge e, double Y) {
-			return this.getLine().XforY(Y) > e.getLine().XforY(Y);
-		}
+	// 	public boolean liesOnTheRightSideof(Edge e, double Y) {
+	// 		return this.getLine().XforY(Y) > e.getLine().XforY(Y);
+	// 	}
 		
-		public boolean liesOnTheLeftSideof(Node v) {
-			return this.getLine().XforY(v.getY()) < v.getX();
-		}
+	// 	public boolean liesOnTheLeftSideof(Node v) {
+	// 		return this.getLine().XforY(v.getY()) < v.getX();
+	// 	}
 		
-		private Polygon polygon;		
-		private Node helper;
-		private int index;
-	}
+	// 	private Polygon polygon;		
+	// 	private Node helper;
+	// 	private int index;
+	// }
 
 	static class Diagonal {
 		
@@ -322,8 +377,6 @@ public class MonotonePartition {
 		
 		int index1, index2;
 	}
-	}
-
 	static class MonotoneVertexComparator implements Comparator<Node> {
 
 		@Override

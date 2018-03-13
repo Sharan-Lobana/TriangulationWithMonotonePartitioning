@@ -8,8 +8,9 @@ public class DoublyConnectedEdgeList {
 
     private DCEL_Edge rep_edge; //representative edge
     private int id;  //assigned number to DCEL
-    private static int DCEL_count = 0; //number of DCELs
-    private static int edge_count = 0; //number of edges
+    private static int DCEL_count = 0;  //number of DCELs
+    private static int edge_count = 0;  //number of edges
+    private static int node_count = 0;  //number of nodes
 
     public DoublyConnectedEdgeList() {
         this.rep_edge = null;
@@ -35,7 +36,7 @@ public class DoublyConnectedEdgeList {
     // TODO: get (x,y) for each vertex
     // TODO: assign -1 DCEL_id to outer edges
 
-    public DoublyConnectedEdgeList(ArrayList<Integer> nodes, int id) {
+    public DoublyConnectedEdgeList(ArrayList<Vertex> nodes, int id) {
       if(nodes.size() >= 3) {
         this.id = id;
         Node one = new Node(nodes.get(0));
@@ -91,8 +92,7 @@ public class DoublyConnectedEdgeList {
         this.setRepEdge(hthree1);
         this.setID(id);
 
-        for(int i = 3; i < nodes.size(); i++)
-        {
+        for(int i = 3; i < nodes.size(); i++) {
           this.insert(new Node(nodes.get(i)));
         }
 
@@ -118,6 +118,10 @@ public class DoublyConnectedEdgeList {
       return edge_count;
     }
 
+    public static int node_count() {
+      return node_count;
+    }
+
     public void setRepEdge(DCEL_Edge rep_edge) {
       this.rep_edge = rep_edge;
     }
@@ -132,6 +136,10 @@ public class DoublyConnectedEdgeList {
 
     public static void incrementEdgeCount() {
       edge_count++;
+    }
+
+    public static void incrementNodeCount() {
+      node_count++;
     }
 
     public void insert(Node a) {
@@ -214,12 +222,14 @@ public class DoublyConnectedEdgeList {
         private int id;
 
         public Node() {
-          this.id = 0;
+          DoublyConnectedEdgeList.incrementNodeCount();
+          this.id = DoublyConnectedEdgeList.node_count();
           this.IncidentEdges = new TreeSet<Pair<Double,DCEL_Edge> >(new IncidentEdgeComparator());
         }
 
-        public Node(int id, double x, double y) {
-          this.id = id;
+        public Node(double x, double y) {
+          DoublyConnectedEdgeList.incrementNodeCount();
+          this.id = DoublyConnectedEdgeList.node_count();
           this.x = x;
           this.y = y;
           this.IncidentEdges = new TreeSet<Pair<Double,DCEL_Edge> >(new IncidentEdgeComparator());
@@ -227,6 +237,14 @@ public class DoublyConnectedEdgeList {
 
         public Node(int id) {
           this.id = id;
+          this.IncidentEdges = new TreeSet<Pair<Double,DCEL_Edge> >(new IncidentEdgeComparator());
+        }
+
+        public Node(Vertex v) {
+          DoublyConnectedEdgeList.incrementNodeCount();
+          this.id = DoublyConnectedEdgeList.node_count();
+          this.x = v.x();
+          this.y = v.y():
           this.IncidentEdges = new TreeSet<Pair<Double,DCEL_Edge> >(new IncidentEdgeComparator());
         }
 
@@ -292,7 +310,8 @@ public class DoublyConnectedEdgeList {
         this.next = null;
         this.prev = null;
         this.twin = null;
-        this.id = 0;
+        DoublyConnectedEdgeList.incrementEdgeCount();
+        this.id = DoublyConnectedEdgeList.edge_count();
         this.DCEL_id = 0;
         this.is_counter_clock = true;
       }

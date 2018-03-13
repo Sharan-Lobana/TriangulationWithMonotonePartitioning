@@ -50,10 +50,17 @@ public class DrawGraph extends JPanel {
 
         double dx = hor_mul*(x2 - x1);
         double dy = ver_mul*(y2 - y1);
-        double slope = dx == 0 ? dy * 100000 : dy/dx;
+        double dtemp = dx;
+        dx = dy;
+        dy = dtemp;
+        dx *= -1.0;
+        double len = Math.sqrt(dx * dx + dy * dy);
+        dx /= len;
+        dy /= len;
+        //double slope = dx == 0 ? dy * 100000 : dy/dx;
 
-        double mx = (hor_mul*(x1 + x2)/2) + (int)(-slope * 20 * dx/Math.sqrt(dx * dx + dy * dy));
-        double my = (ver_mul*(y1 + y2)/2) + (int)(-slope * 20 * dy/Math.sqrt(dx * dx + dy * dy));
+        double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));// + (int)(-slope * 20 * dx/Math.sqrt(dx * dx + dy * dy));
+        double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy))); //+ (int)(-slope * 20 * dy/Math.sqrt(dx * dx + dy * dy));
 
         String label = Integer.toString(current.id());
         g2.setColor(Color.red);

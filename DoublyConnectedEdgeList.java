@@ -23,6 +23,12 @@ public class DoublyConnectedEdgeList {
       this.id = id;
     }
 
+    public DoublyConnectedEdgeList(DCEL_Edge rep_edge) {
+      this.rep_edge = rep_edge;
+      incrementDCELCount();
+      this.id = DCEL_count();
+    }
+
     // TODO: get (x,y) for each vertex
     // TODO: assign -1 DCEL_id to outer edges
 
@@ -189,10 +195,8 @@ public class DoublyConnectedEdgeList {
 
 
     public DoublyConnectedEdgeList connect(Node a, Node b, DCEL_Edge e_prev, DCEL_Edge e_next) {
-      DoublyConnectedEdgeList.incrementEdgeCount();
-      DCEL_Edge e_a_b = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),this.id());
-      DoublyConnectedEdgeList.incrementEdgeCount();
-      DCEL_Edge e_b_a = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),this.id());
+      DCEL_Edge e_a_b = new DCEL_Edge(this.id());
+      DCEL_Edge e_b_a = new DCEL_Edge(this.id());
 
       e_a_b.setOrigin(a);
       e_b_a.setOrigin(b);
@@ -216,8 +220,16 @@ public class DoublyConnectedEdgeList {
       e_b_a.prev().setNext(e_b_a);
 
       this.setRepEdge(e_a_b);
-      DoublyConnectedEdgeList.incrementDCELCount();
-      return new DoublyConnectedEdgeList(e_b_a, DoublyConnectedEdgeList.DCEL_count());
+      DoublyConnectedEdgeList newDCEL = new DoublyConnectedEdgeList(e_b_a);
+
+      e_b_a.setDCELID(newDCEL.id());
+      DCEL_Edge cur = e_b_a.next();
+
+      while(cur != e_b_a)
+      {
+        cur.setDCELID(newDCEL.id());
+      }
+      return newDCEL;
     }
 
     //TODO: add code for IncidentEdges
@@ -268,9 +280,9 @@ public class DoublyConnectedEdgeList {
         public DCEL_Edge IncidentEdge(Double d) {
           Pair<Double,DCEL_Edge> p = this.IncidentEdges.lower(new Pair<Double,DCEL_Edge>(d,new DCEL_Edge()));
           if(p == null && d <= 2*Math.PI)
-            p = new Pair<Double,DCEL_Edge>(d,this.IncidentEdge());  //TODO: check the change of the next 4 lines of code by Sharan
+            return this.IncidentEdge();
           if(p == null)
-            return p.getValue();
+            return null;
           return p.getValue();
         }
 
@@ -393,7 +405,10 @@ public class DoublyConnectedEdgeList {
       public void setID(int id) {
         this.id = id;
       }
-
+      public void setDCELID(int DCEL_id)
+      {
+        this.DCEL_id = DCEL_id;
+      }
       public void setCounterClock(boolean is_counter_clock) {
         this.is_counter_clock = is_counter_clock;
       }

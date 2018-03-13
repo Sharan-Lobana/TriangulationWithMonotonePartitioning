@@ -19,6 +19,12 @@ public class Vertex {
 		this.angle = angle;
 	}
 
+	public Vertex(DoublyConnectedEdgeList.Node a) {
+		this.x = a.x();
+		this.y = a.y();
+		this.index = a.id();
+	}
+	
 	public double x() {
 		return this.x;
 	}

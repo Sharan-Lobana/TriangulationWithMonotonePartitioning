@@ -32,18 +32,19 @@ public class DoublyConnectedEdgeList {
     // TODO: get (x,y) for each vertex
     // TODO: assign -1 DCEL_id to outer edges
 
-    public DoublyConnectedEdgeList(ArrayList<Vertex> nodes, int id) {
+    public DoublyConnectedEdgeList(ArrayList<Vertex> nodes) {
       if(nodes.size() >= 3) {
-        this.id = id;
+        incrementDCELCount();
+        this.id = DCEL_count();
         Node one = new Node(nodes.get(0));
         Node two = new Node(nodes.get(1));
         Node three = new Node(nodes.get(2));
 
-        DCEL_Edge hone1 = new DCEL_Edge(id);
+        DCEL_Edge hone1 = new DCEL_Edge(DCEL_count());
         DCEL_Edge hone2 = new DCEL_Edge(-1);
-        DCEL_Edge htwo1 = new DCEL_Edge(id);
+        DCEL_Edge htwo1 = new DCEL_Edge(DCEL_count());
         DCEL_Edge htwo2 = new DCEL_Edge(-1);
-        DCEL_Edge hthree1 = new DCEL_Edge(id);
+        DCEL_Edge hthree1 = new DCEL_Edge(DCEL_count());
         DCEL_Edge hthree2 = new DCEL_Edge(-1);
 
         one.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(two.y()-one.y(),two.x()-one.x()),hone1));
@@ -428,9 +429,9 @@ public class DoublyConnectedEdgeList {
     public static class Triangle {
       //nodes are in counterclockwise order
       private int id;
-      private Node first;
-      private Node second;
-      private Node third;
+      private Vertex first;
+      private Vertex second;
+      private Vertex third;
 
       public Triangle() {
         this.id = 0;
@@ -439,22 +440,29 @@ public class DoublyConnectedEdgeList {
         this.third = null;
       }
 
-      public Triangle(Node first, Node second, Node third, int id) {
+      public Triangle(Vertex first, Vertex second, Vertex third, int id) {
         this.first = first;
         this.second = second;
         this.third = third;
         this.id = id;
       }
 
-      public Node first() {
+      public Triangle(Node a, Node b, Node c, int id) {
+        this.first = new Vertex(a);
+        this.second = new Vertex(b);
+        this.third = new Vertex(c);
+        this.id = id;
+      }
+
+      public Vertex first() {
         return this.first;
       }
 
-      public Node second() {
+      public Vertex second() {
         return this.second;
       }
 
-      public Node thrid() {
+      public Vertex thrid() {
         return this.third;
       }
 
@@ -462,15 +470,15 @@ public class DoublyConnectedEdgeList {
         return this.id;
       }
 
-      public void setFirst(Node first) {
+      public void setFirst(Vertex first) {
         this.first = first;
       }
 
-      public void setSecond(Node second) {
+      public void setSecond(Vertex second) {
         this.second = second;
       }
 
-      public void setThird(Node third) {
+      public void setThird(Vertex third) {
         this.third = third;
       }
 
@@ -479,11 +487,11 @@ public class DoublyConnectedEdgeList {
       }
 
       public DoublyConnectedEdgeList convertToDCEL() {
-        ArrayList<Integer> nodes = new ArrayList<Integer>();
-        nodes.add(first.id());
-        nodes.add(second.id());
-        nodes.add(third.id());
-        return new DoublyConnectedEdgeList(nodes,this.id);
+        ArrayList<Vertex> nodes = new ArrayList<Vertex>();
+        nodes.add(first);
+        nodes.add(second);
+        nodes.add(third);
+        return new DoublyConnectedEdgeList(nodes);
       }
     }
 

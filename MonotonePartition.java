@@ -1,5 +1,7 @@
 import javafx.util.Pair;
 import java.util.ArrayList;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class MonotonePartition {
 	private TreeMap<Integer,DoublyConnectedEdgeList> Partition;
@@ -15,7 +17,7 @@ public class MonotonePartition {
 		//Default PQ capacity is 11
 		PriorityQueue<DoublyConnectedEdgeList.Node> Q = new PriorityQueue<DoublyConnectedEdgeList.Node>(11, new MonotoneVertexComparator());
 
-		DCEL_Edge cur_edge = polygon.rep_edge();
+		DoublyConnectedEdgeList.DCEL_Edge cur_edge = polygon.rep_edge();
 		do
 		{
 			Q.add(cur_edge.origin());
@@ -27,7 +29,7 @@ public class MonotonePartition {
 		Partition.put(polygon.id(),polygon);
 		this.Trapezoidalization = new ArrayList<Edge>();
 		
-		TreeSet<DCEL_Edge> T = new TreeSet<DCEL_Edge>(new MonotoneEdgeComparator());
+		TreeSet<DoublyConnectedEdgeList.DCEL_Edge> T = new TreeSet<DoublyConnectedEdgeList.DCEL_Edge>(new MonotoneEdgeComparator());
 
 		TreeMap<Integer, Pair<DoublyConnectedEdgeList.Node,VertexType> > Helper = new TreeMap<Integer, Pair<DoublyConnectedEdgeList.Node,VertexType> >();
 
@@ -48,7 +50,7 @@ public class MonotonePartition {
 		
 	}*/
 	
-	private static void handleVertex(DoublyConnectedEdgeList.Node v_i, TreeSet<DCEL_Edge> T, TreeMap<Integer, DoublyConnectedEdgeList.Node> Helper) {
+	private void handleVertex(DoublyConnectedEdgeList.Node v_i, TreeSet<DoublyConnectedEdgeList.DCEL_Edge> T, TreeMap<Integer, Pair<DoublyConnectedEdgeList.Node,VertexType> > Helper) {
 		
 		// DoublyConnectedEdgeList.Node prev_node = v_i.IncidentEdge().prev().origin();
 
@@ -182,104 +184,123 @@ public class MonotonePartition {
 		// 		break;
 		// }
 
-		DCEL_Edge e_prev = v_i.IncidentEdge().prev();
-		DCEL_Edge e_next = v_i.IncidentEdge();
+		DoublyConnectedEdgeList.DCEL_Edge e_prev = v_i.IncidentEdge().prev();
+		DoublyConnectedEdgeList.DCEL_Edge e_next = v_i.IncidentEdge();
 
+		DoublyConnectedEdgeList.DCEL_Edge e_i, e_i_1, e_j, e_j_1;
+		double x1,x2;
+		DoublyConnectedEdgeList newDCEL;
 		switch (getVertexType(v_i)) {
-			case VertexType.START:
-				DCEL_Edge e_i = v_i.IncidentEdge();
-				DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+			case START:
+				e_i = v_i.IncidentEdge();
+				e_i_1 = v_i.IncidentEdge().prev();
 				
 				T.add(e_i);
 				T.add(e_i_1);
 
-				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,START));
+				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.START));
 
 				break;
 			
-			case VertexType.END:
-				DCEL_Edge e_i = v_i.IncidentEdge();
-				DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+			case END:
+				e_i = v_i.IncidentEdge();
+				e_i_1 = v_i.IncidentEdge().prev();
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
-					Partition.put(Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next()));
+				{
+					newDCEL = Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+					Partition.put(newDCEL.id(), newDCEL);
+				}
 				T.remove(e_i);
 				T.remove(e_i_1);
 				
 				break;
 
-			case VertexType.SPLIT:
-				DCEL_Edge e_j = T_Query(T,v_i,false);
-				DCEL_Edge e_j_1 = T_Query(T,v_i,true);
+			case SPLIT:
+				e_j = T_Query(T,v_i,false);
+				e_j_1 = T_Query(T,v_i,true);
 
-				double x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
-				double x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
+				x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
+				x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 				Trapezoidalization.add(new Edge(new Vertex(x1,v_i.y()),new Vertex(x2,v_i.y())));
 
-				Partition.put(Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next()));
-				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,SPLIT));
+				newDCEL = Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
+				Partition.put(newDCEL.id(), newDCEL);
+				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.SPLIT));
 				
-				DCEL_Edge e_i = v_i.IncidentEdge();
-				DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+				e_i = v_i.IncidentEdge();
+				e_i_1 = v_i.IncidentEdge().prev();
 				
 				T.add(e_i);
 				T.add(e_i_1);
 				
-				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,SPLIT));
+				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.SPLIT));
 				break;
 
-			case VertexType.MERGE:
-				DCEL_Edge e_i = v_i.IncidentEdge();
-				DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+			case MERGE:
+				e_i = v_i.IncidentEdge();
+				e_i_1 = v_i.IncidentEdge().prev();
 				
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
-					Partition.put(Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next()));
+				{
+					newDCEL = Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+					Partition.put(newDCEL.id(),newDCEL);
+				}
 				T.remove(e_i);
 				T.remove(e_i_1);
 
-				DCEL_Edge e_j = T_Query(T,v_i,false);
-				DCEL_Edge e_j_1 = T_Query(T,v_i,true);
+				e_j = T_Query(T,v_i,false);
+				e_j_1 = T_Query(T,v_i,true);
 
-				double x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
-				double x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
+				x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
+				x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 				Trapezoidalization.add(new Edge(new Vertex(x1,v_i.y()),new Vertex(x2,v_i.y())));
 
 				if(Helper.get(e_j.id()).getValue() == VertexType.MERGE)
-					Partition.put(Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next()));
-				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,MERGE));
+				{
+					newDCEL = Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
+					Partition.put(newDCEL.id(), newDCEL);
+				}
+				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.MERGE));
 				break;
 			
-			case VertexType.REGULAR:
-				DCEL_Edge e_i = v_i.IncidentEdge();
+			case REGULAR:
+				e_i = v_i.IncidentEdge();
 				if(Math.atan2(e_i.next().origin().y()-e_i.origin().y(),e_i.next().origin().x()-e_i.origin().x()) < 0)
 				{
-					DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+					e_i_1 = v_i.IncidentEdge().prev();
 					if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
-						Partition.put(Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next()));
+					{
+						newDCEL = Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+						Partition.put(newDCEL.id(), newDCEL);
+					}
 					T.remove(e_i_1);
 
-					DCEL_Edge e_j_1 = T_Query(T,v_i,true);
-					double x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
+					e_j_1 = T_Query(T,v_i,true);
+					x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 					Trapezoidalization.add(new Edge(new Vertex(v_i.x(),v_i.y()),new Vertex(x2,v_i.y())));
 
-					DCEL_Edge e_i = v_i.IncidentEdge();
+					e_i = v_i.IncidentEdge();
 					T.add(e_i);
-					Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,REGULAR));
+					Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.REGULAR));
 				}
 				else
 				{
 					T.remove(e_i);
 
-					DCEL_Edge e_j = T_Query(T,v_i,false);
-					double x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
+					e_j = T_Query(T,v_i,false);
+					x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
 					Trapezoidalization.add(new Edge(new Vertex(x1,v_i.y()),new Vertex(v_i.x(),v_i.y())));
 
-					DCEL_Edge e_j = T_Query(T,v_i,false);
+					e_j = T_Query(T,v_i,false);
 					if(Helper.get(e_j.id()).getValue() == VertexType.MERGE)
-						Partition.put(Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next()));
-					Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,REGULAR));			
+					{
+						newDCEL = Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
+						Partition.put(newDCEL.id(), newDCEL);
+					}
+					Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.REGULAR));			
 
-					DCEL_Edge e_i = v_i.IncidentEdge();
-					DCEL_Edge e_i_1 = v_i.IncidentEdge().prev();
+					e_i = v_i.IncidentEdge();
+					e_i_1 = v_i.IncidentEdge().prev();
 					T.add(e_i_1);
 				}
 				break;
@@ -296,8 +317,8 @@ public class MonotonePartition {
 
 	private VertexType getVertexType(DoublyConnectedEdgeList.Node cur) {
 		
-		Point prev = cur.IncidentEdge().prev().origin();
-		Point next = cur.IncidentEdge().next().origin();
+		DoublyConnectedEdgeList.Node prev = cur.IncidentEdge().prev().origin();
+		DoublyConnectedEdgeList.Node next = cur.IncidentEdge().next().origin();
 
 		if (prev.y() < cur.y() &&
 			 next.y() < cur.y()) {
@@ -334,9 +355,9 @@ public class MonotonePartition {
 		return false;
 	}
 
-	private DCEL_Edge T_Query(TreeSet<DCEL_Edge> T, DoublyConnectedEdgeList.Node v, boolean direction)
+	private DoublyConnectedEdgeList.DCEL_Edge T_Query(TreeSet<DoublyConnectedEdgeList.DCEL_Edge> T, DoublyConnectedEdgeList.Node v, boolean direction)
 	{
-		DCEL_Edge e = new DCEL_Edge();
+		DoublyConnectedEdgeList.DCEL_Edge e = new DoublyConnectedEdgeList.DCEL_Edge();
 		e.setOrigin(v);
 		e.setNext(e);
 		if(direction)
@@ -484,6 +505,7 @@ public class MonotonePartition {
 	}
 	static class MonotoneVertexComparator implements Comparator<DoublyConnectedEdgeList.Node> {
 
+		@Override
 		public int compare(DoublyConnectedEdgeList.Node v1, DoublyConnectedEdgeList.Node v2) {
 			if (v1.y() > v2.y() || v1.y() == v2.y() && v1.x() > v2.x())
 				return -1;
@@ -491,9 +513,10 @@ public class MonotonePartition {
 				return 1;
 		}
 	}
-	static class MonotoneEdgeComparator implements Comparator<DCEL_Edge> {
+	static class MonotoneEdgeComparator implements Comparator<DoublyConnectedEdgeList.DCEL_Edge> {
 
-		public int compare(DCEL_Edge e1, DCEL_Edge e2) {
+		@Override
+		public int compare(DoublyConnectedEdgeList.DCEL_Edge e1, DoublyConnectedEdgeList.DCEL_Edge e2) {
 			DoublyConnectedEdgeList.Node top1 = e1.getNode(true), bot1 = e1.getNode(false);
 			DoublyConnectedEdgeList.Node top2 = e2.getNode(true), bot2 = e2.getNode(false);
 			int mul = 1;

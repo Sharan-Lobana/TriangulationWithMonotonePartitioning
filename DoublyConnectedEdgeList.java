@@ -208,7 +208,7 @@ public class DoublyConnectedEdgeList {
     }
 
     //TODO: add code for IncidentEdges
-    public class Node {
+    public static class Node {
         private double x,y;
         private TreeSet<Pair<Double,DCEL_Edge> > IncidentEdges;
         private int id;
@@ -277,7 +277,8 @@ public class DoublyConnectedEdgeList {
 
     }
 
-    public class DCEL_Edge {
+    //TODO: check static
+    public static class DCEL_Edge {
 
       private Node origin;
       private DCEL_Edge next;
@@ -334,6 +335,10 @@ public class DoublyConnectedEdgeList {
       public int id() {
         return this.id;
       }
+      public int DCEL_id() {
+        return this.id;
+      }
+
 
       public boolean isCounterClock() {
         return this.is_counter_clock;

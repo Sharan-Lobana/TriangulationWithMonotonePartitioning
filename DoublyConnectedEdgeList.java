@@ -11,6 +11,7 @@ public class DoublyConnectedEdgeList {
     private static int DCEL_count = 0;  //number of DCELs
     private static int edge_count = 0;  //number of edges
     private static int node_count = 0;  //number of nodes
+    private static final double eps = 1e-4;
 
     public DoublyConnectedEdgeList() {
         this.rep_edge = null;
@@ -20,17 +21,6 @@ public class DoublyConnectedEdgeList {
     public DoublyConnectedEdgeList(DCEL_Edge rep_edge, int id) {
       this.rep_edge = rep_edge;
       this.id = id;
-
-      //find the node count
-      DCEL_Edge temp = rep_edge;
-      Node temp_node = temp.origin();
-      int count = 1;
-      temp = temp.next();
-      while(temp.origin().id() != temp_node.id()) {
-        count++;
-        temp = temp.next();
-      }
-      DCEL_count += count;
     }
 
     // TODO: get (x,y) for each vertex
@@ -44,11 +34,18 @@ public class DoublyConnectedEdgeList {
         Node three = new Node(nodes.get(2));
 
         DCEL_Edge hone1 = new DCEL_Edge(id);
-        DCEL_Edge hone2 = new DCEL_Edge(id);
+        DCEL_Edge hone2 = new DCEL_Edge(-1);
         DCEL_Edge htwo1 = new DCEL_Edge(id);
-        DCEL_Edge htwo2 = new DCEL_Edge(id);
+        DCEL_Edge htwo2 = new DCEL_Edge(-1);
         DCEL_Edge hthree1 = new DCEL_Edge(id);
-        DCEL_Edge hthree2 = new DCEL_Edge(id);
+        DCEL_Edge hthree2 = new DCEL_Edge(-1);
+
+        one.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(two.y()-one.y(),two.x()-one.x()),hone1));
+        one.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(three.y()-one.y(),three.x()-one.x()),hthree2));
+        two.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(three.y()-two.y(),three.x()-two.x()),htwo1));
+        two.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(one.y()-two.y(),one.x()-two.x()),hone2));
+        three.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(one.y()-three.y(),one.x()-three.x()),hthree1));
+        three.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(two.y()-three.y(),two.x()-three.x()),htwo2));
 
         hone1.setOrigin(one);
         hone1.setNext(htwo1);
@@ -139,10 +136,13 @@ public class DoublyConnectedEdgeList {
     public void insert(Node a) {
 
       DCEL_Edge head = this.rep_edge();
-      DoublyConnectedEdgeList.incrementEdgeCount();
-      DCEL_Edge half_edge_1 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(), this.id);
-      DoublyConnectedEdgeList.incrementEdgeCount();
-      DCEL_Edge half_edge_2 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(), this.id);
+      DCEL_Edge half_edge_1 = new DCEL_Edge(this.id);
+      DCEL_Edge half_edge_2 = new DCEL_Edge(-1);
+
+      Node b = head.origin(), c = head.next().origin();
+
+      b.removeIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(c.y()-b.y(),c.x()-b.x()),head));
+      c.removeIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(b.y()-c.y(),b.x()-c.x()),head.twin()));
 
       half_edge_1.setOrigin(a);
       half_edge_1.setPrev(head);
@@ -160,7 +160,18 @@ public class DoublyConnectedEdgeList {
       head.setNext(half_edge_1);
       head.twin().setOrigin(a);
       head.twin().setPrev(half_edge_2);
+
+      b.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(a.y()-b.y(),a.x()-b.x()),head));
+      a.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(b.y()-a.y(),b.x()-a.x()),head.twin()));
+      a.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(c.y()-a.y(),c.x()-a.x()),half_edge_1));
+      c.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(a.y()-c.y(),a.x()-c.x()),half_edge_2));
+
       this.setRepEdge(half_edge_1);
+
+      b.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(a.y()-b.y(),a.x()-b.x()),head));
+      a.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(b.y()-a.y(),b.x()-a.x()),head.twin()));
+      a.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(c.y()-a.y(),c.x()-a.x()),half_edge_1));
+      c.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(a.y()-c.y(),a.x()-c.x()),half_edge_2));
     }
 
     public void printInterior() {
@@ -278,11 +289,17 @@ public class DoublyConnectedEdgeList {
           this.IncidentEdges.add(p);
         }
 
+        public void removeIncidentEdge(Pair<Double,DCEL_Edge> p)
+        {
+          this.IncidentEdges.remove(p);
+        }
+
         public class IncidentEdgeComparator implements Comparator<Pair<Double,DCEL_Edge> > {
 
           @Override
           public int compare(Pair<Double,DCEL_Edge> p1, Pair<Double,DCEL_Edge> p2) {
-            if(p1.getKey() > p2.getKey()) return -1;
+            if(Math.abs(p1.getKey() - p2.getKey()) < eps) return 0;
+            if(p1.getKey() < p2.getKey()) return -1;
             return 1;
           }
         }

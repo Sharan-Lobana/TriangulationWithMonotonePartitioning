@@ -12,19 +12,45 @@ public class MonotoneTriangulation {
     this.monotonePolygons = monotonePolygons;
   }
 
+  //computes ccw between vectors one->two and two->three
   public boolean CCW(DoublyConnectedEdgeList.Node one, DoublyConnectedEdgeList.Node two, DoublyConnectedEdgeList.Node three) {
-    double x1,y1,x2,y2;
-    x1 = two.x()-one.x();
-    y1 = two.y()-one.y();
-    x2 = three.x()-one.x();
-    y2 = three.y()-one.y();
+    double x1,y1,x2,y2; //x1,y1 are the new coordinates of b; x2,y2 are the new coordinates of c
+    x1 = two.x()-one.x(); //move a to origin such that we are concerned with coordinates of b only
+    y1 = two.y()-one.y(); //move a to origin such that we are concerned with coordinates of b only
+    x2 = three.x()-two.x(); //move b to origin such that we are concerned with coordinates of c only
+    y2 = three.y()-two.y(); //move b to origin such that we are concerned with coordinates of c only
     if(x1*y2-x2*y1 < 0.0)
       return true;
     return false;
   }
 
+  //computes the smaller angle between the vectors a->b and b->c
+  public double calculateAngleUtil(DoublyConnectedEdgeList.Node a, DoublyConnectedEdgeList.Node b, DoublyConnectedEdgeList.Node c) {
+    double x1,y1,x2,y2;
+    x1 = b.x()-a.x();
+    y1 = b.y()-a.y();
+    x2 = c.x()-b.x();
+    y2 = c.y()-b.y();
+    double angle = Math.asin(2.0*(Math.abs(x1*y2-y1*x2))/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
+    return angle;
+  }
+
+  //computes the interior angle of vertex b such the the adjoining edges are a->b and b->c
   public double calculateAngle(DoublyConnectedEdgeList.Node a, DoublyConnectedEdgeList.Node b, DoublyConnectedEdgeList.Node c) {
-    
+    double x1,y1,x2,y2;
+    x1 = b.x()-a.x();
+    y1 = b.y()-a.y();
+    x2 = c.x()-b.x();
+    y2 = c.y()-b.y();
+    double angle = Math.asin(2.0*(Math.abs(x1*y2-y1*x2))/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
+    if(x1*y2-y1*x2 < 0.0)
+    angle += Math.PI;
+    else if(x1*y2 == x2*y1) //TODO: double multiplication is doubtful, keep an epsilon
+    angle = Math.PI;
+    else
+    angle = Math.PI - angle;
+
+    return angle;
   }
   public ArrayList<DoublyConnectedEdgeList> triangulateMonotonePolygon() {
     ArrayList<DoublyConnectedEdgeList> listOfTriangles = new ArrayList<DoublyConnectedEdgeList>();
@@ -53,7 +79,7 @@ public class MonotoneTriangulation {
         temp = topEdge;
 
         TreeMap<Integer,Double> interiorAngle = new TreeMap<Integer,Double>();
-        DoublyConnectedEdgeList.Node prev = topEdge.origin(),current;
+        DoublyConnectedEdgeList.Node prev = topEdge.origin(),current, prevAngleNode;
         isLeft.put(topEdge.origin().id(),true);
         isReflex.put(topEdge.origin().id(),false);
         interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
@@ -123,34 +149,59 @@ public class MonotoneTriangulation {
               // diagonals.add(ph,pi);
               //Maintain counterclockwise nature of nodes
               if(isLeft.get(pi.id()))
-              triangles.add(new DoublyConnectedEdgeList.Triangle(pi,ph,tempNode,DoublyConnectedEdgeList.DCEL_count()));
+                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,ph,tempNode,DoublyConnectedEdgeList.DCEL_count()));
               else
-              triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,ph,DoublyConnectedEdgeList.DCEL_count()));
+                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,ph,DoublyConnectedEdgeList.DCEL_count()));
+
+              //Update the interior angle of the vertex ph, works for both left and right vertices
+              interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-(Math.PI -calculateAngleUtil(tempNode,ph,pi)));
+              if(interiorAngle.get(ph.id()) <= Math.PI)
+                isReflex.put(ph.id(),false);
               DoublyConnectedEdgeList.incrementDCELCount();
             }
             stack.push(pi);
           }
           else {
+            boolean angleChangeFlag = true;
             //add diagonals to the nodes in other sides
             while(!stack.isEmpty()) {
-              // diagonals.add(stack.pop(),pi);
               tempNode = stack.peek();
               stack.pop();
               if(isLeft.get(pi.id())) {
-                if(stack.isEmpty() && prevLeft != null)
-                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,prevLeft,DoublyConnectedEdgeList.DCEL_count()));
-                else
-                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,stack.peek(),DoublyConnectedEdgeList.DCEL_count()));
-                DoublyConnectedEdgeList.incrementDCELCount();
+                if(stack.isEmpty() && prevLeft != null) {
+                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,prevLeft,DoublyConnectedEdgeList.DCEL_count()));
+                  prevAngleNode = prevLeft;
+                }
+                else {
+                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,stack.peek(),DoublyConnectedEdgeList.DCEL_count()));
+                  prevAngleNode = stack.peek();
+                }
               }
               else {
-                if(stack.isEmpty() && prevRight != null)
-                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,prevRight,tempNode,DoublyConnectedEdgeList.DCEL_count()));
-                else
-                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,stack.peek(),tempNode,DoublyConnectedEdgeList.DCEL_count()));
-                DoublyConnectedEdgeList.incrementDCELCount();
+                if(stack.isEmpty() && prevRight != null) {
+                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,prevRight,tempNode,DoublyConnectedEdgeList.DCEL_count()));
+                  prevAngleNode = prevRight;
+                }
+                else {
+                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,stack.peek(),tempNode,DoublyConnectedEdgeList.DCEL_count()));
+                  prevAngleNode = stack.peek();
+                }
               }
+
+              //angle change needs to be computed only once
+              if(angleChangeFlag) {
+                interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-(Math.PI - calculateAngleUtil(pi,tempNode,prevAngleNode)));
+                interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-(Math.PI - calculateAngleUtil(tempNode,pi,prevAngleNode)));
+                if(interiorAngle.get(tempNode.id()) <= Math.PI)
+                  isReflex.put(tempNode.id(),false);
+                if(interiorAngle.get(pi.id()) <= Math.PI)
+                  isReflex.put(pi.id(),false);
+                angleChangeFlag = false;
+              }
+
+              DoublyConnectedEdgeList.incrementDCELCount();
             }
+
             stack.push(ph);
             stack.push(pi);
             ph = pi;  //Update the previous node
@@ -183,9 +234,9 @@ public class MonotoneTriangulation {
 		@Override
 		public int compare(DoublyConnectedEdgeList.Node v1, DoublyConnectedEdgeList.Node v2) {
 			if ((v1.y() > v2.y()) || (v1.y() == v2.y() && v1.x() > v2.x()))
-				return 1;
+				return -1;  //return -1 if v1 needs to come before v2 in the final ordering
 			else
-				return -1;
+				return 1;
 		}
 	}
 }

@@ -238,7 +238,7 @@ public class DoublyConnectedEdgeList {
           DoublyConnectedEdgeList.incrementNodeCount();
           this.id = DoublyConnectedEdgeList.node_count();
           this.x = v.x();
-          this.y = v.y():
+          this.y = v.y();
           this.IncidentEdges = new TreeSet<Pair<Double,DCEL_Edge> >(new IncidentEdgeComparator());
         }
 

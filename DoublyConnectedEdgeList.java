@@ -43,18 +43,12 @@ public class DoublyConnectedEdgeList {
         Node two = new Node(nodes.get(1));
         Node three = new Node(nodes.get(2));
 
-        DoublyConnectedEdgeList.incrementEdgeCount();
-        DCEL_Edge hone1 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),id);
-        DoublyConnectedEdgeList.incrementEdgeCount();
-        DCEL_Edge hone2 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),id);
-        DoublyConnectedEdgeList.incrementEdgeCount();
-        DCEL_Edge htwo1 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),id);
-        DoublyConnectedEdgeList.incrementEdgeCount();
-        DCEL_Edge htwo2 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),id);
-        DoublyConnectedEdgeList.incrementEdgeCount();
-        DCEL_Edge hthree1 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),id);
-        DoublyConnectedEdgeList.incrementEdgeCount();
-        DCEL_Edge hthree2 = new DCEL_Edge(DoublyConnectedEdgeList.edge_count(),id);
+        DCEL_Edge hone1 = new DCEL_Edge(id);
+        DCEL_Edge hone2 = new DCEL_Edge(id);
+        DCEL_Edge htwo1 = new DCEL_Edge(id);
+        DCEL_Edge htwo2 = new DCEL_Edge(id);
+        DCEL_Edge hthree1 = new DCEL_Edge(id);
+        DCEL_Edge hthree2 = new DCEL_Edge(id);
 
         hone1.setOrigin(one);
         hone1.setNext(htwo1);
@@ -316,8 +310,9 @@ public class DoublyConnectedEdgeList {
         this.is_counter_clock = true;
       }
 
-      public DCEL_Edge(int id, int DCEL_id) {
-        this.id = id;
+      public DCEL_Edge(int DCEL_id) {
+        DoublyConnectedEdgeList.incrementEdgeCount();;
+        this.id = DoublyConnectedEdgeList.edge_count() ;
         this.DCEL_id = DCEL_id;
       }
 

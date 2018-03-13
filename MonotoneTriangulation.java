@@ -21,7 +21,10 @@ public class MonotoneTriangulation {
     if(x1*y2-x2*y1 < 0.0)
       return true;
     return false;
+  }
 
+  public double calculateAngle(DoublyConnectedEdgeList.Node a, DoublyConnectedEdgeList.Node b, DoublyConnectedEdgeList.Node c) {
+    
   }
   public ArrayList<DoublyConnectedEdgeList> triangulateMonotonePolygon() {
     ArrayList<DoublyConnectedEdgeList> listOfTriangles = new ArrayList<DoublyConnectedEdgeList>();
@@ -49,17 +52,23 @@ public class MonotoneTriangulation {
         TreeMap<Integer,Boolean> isReflex = new TreeMap<Integer,Boolean>();
         temp = topEdge;
 
+        TreeMap<Integer,Double> interiorAngle = new TreeMap<Integer,Double>();
         DoublyConnectedEdgeList.Node prev = topEdge.origin(),current;
         isLeft.put(topEdge.origin().id(),true);
         isReflex.put(topEdge.origin().id(),false);
+        interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
         temp = temp.next();
         while(temp.origin().id() != topEdge.origin().id()) {
 
-          if(temp.origin().y() > temp.next().origin().y())
-          isLeft.put(temp.origin().id(),true);
-          else
-          isLeft.put(temp.origin().id(),false);
+          if(temp.origin().y() > temp.next().origin().y()) {
+            isLeft.put(temp.origin().id(),true);
+          }
+          else {
+            isLeft.put(temp.origin().id(),false);
+          }
 
+          //Calculate the interior angle
+          interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
           current = temp.origin();
           temp = temp.next();
 

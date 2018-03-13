@@ -239,7 +239,7 @@ public class DoublyConnectedEdgeList {
         }
 
         public DCEL_Edge IncidentEdge() {
-          return this.IncidentEdge(new Double(3*Math.PI));
+          return this.IncidentEdge(3*Math.PI);
         }
 
         public DCEL_Edge IncidentEdge(Double d) {
@@ -372,7 +372,68 @@ public class DoublyConnectedEdgeList {
         if(isTop) return this.next().origin();
         return this.origin();
       }
+    }
 
+    public static class Triangle {
+      //nodes are in counterclockwise order
+      private int id;
+      private Node first;
+      private Node second;
+      private Node third;
+
+      public Triangle() {
+        this.id = 0;
+        this.first = null;
+        this.second = null;
+        this.third = null;
+      }
+
+      public Triangle(Node first, Node second, Node third, int id) {
+        this.first = first;
+        this.second = second;
+        this.third = third;
+        this.id = id;
+      }
+
+      public Node first() {
+        return this.first;
+      }
+
+      public Node second() {
+        return this.second;
+      }
+
+      public Node thrid() {
+        return this.third;
+      }
+
+      public int id() {
+        return this.id;
+      }
+
+      public void setFirst(Node first) {
+        this.first = first;
+      }
+
+      public void setSecond(Node second) {
+        this.second = second;
+      }
+
+      public void setThird(Node third) {
+        this.third = third;
+      }
+
+      public void setID(int id) {
+        this.id = id;
+      }
+
+      public DoublyConnectedEdgeList convertToDCEL() {
+        ArrayList<Integer> nodes = new ArrayList<Integer>();
+        nodes.add(first.id());
+        nodes.add(second.id());
+        nodes.add(third.id());
+        return new DoublyConnectedEdgeList(nodes,this.id);
+      }
     }
 
 }

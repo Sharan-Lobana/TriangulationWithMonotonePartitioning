@@ -2,13 +2,15 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.PriorityQueue;
+import java.util.Comparator;
 
 public class MonotonePartition {
 	private TreeMap<Integer,DoublyConnectedEdgeList> Partition;
 	private ArrayList<Edge> Trapezoidalization;
 
 	public MonotonePartition() {
-		this.Partition = new ArrayList<DoublyConnectedEdgeList>();
+		this.Partition = new TreeMap<Integer,DoublyConnectedEdgeList>();
 		this.Trapezoidalization = new ArrayList<Edge>();
 	}
 

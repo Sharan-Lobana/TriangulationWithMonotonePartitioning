@@ -8,26 +8,51 @@ public class SimplePolygon {
 	public static ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 
 	public static void main(String[] args) {
+
 		int n,i;
-		System.out.println("Please enter the number of points:\n");
-		Scanner input = new Scanner(System.in);
-		Random rand = new Random();
-		n = input.nextInt();
-		n = Math.min(n,MAX-1);
-		System.out.println("The value of n entered is: "+Integer.toString(n));
-		System.out.println("The vertices initialized are: ");
-		TreeSet<Integer> tSet = new TreeSet<Integer>();
-		for(i=0; i<n; i++){
-			vertices.add(new Vertex());
-			vertices.get(i).setX(rand.nextInt(n)+1);
-			int temp_y = rand.nextInt(n)+1;
-			while(tSet.contains(temp_y))
-			temp_y = rand.nextInt(n)+1;
-			tSet.add(temp_y);
-			vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
-			vertices.get(i).setIndex(i);
-			System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
-		}
+		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+		//Random point generation from user input
+		// System.out.println("Please enter the number of points:\n");
+		// Scanner input = new Scanner(System.in);
+		// Random rand = new Random();
+		// n = input.nextInt();
+		// n = Math.min(n,MAX-1);
+		// System.out.println("The value of n entered is: "+Integer.toString(n));
+		// System.out.println("The vertices initialized are: ");
+		// TreeSet<Integer> tSet = new TreeSet<Integer>();
+		// for(i=0; i<n; i++){
+		// 	vertices.add(new Vertex());
+		// 	vertices.get(i).setX(rand.nextInt(n)+1);
+		// 	int temp_y = rand.nextInt(n)+1;
+		// 	while(tSet.contains(temp_y))
+		// 	temp_y = rand.nextInt(n)+1;
+		// 	tSet.add(temp_y);
+		// 	vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
+		// 	vertices.get(i).setIndex(i);
+		// 	System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
+		// }
+
+		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+		//##############################################
+		//Test case
+		Vertex[] arr = {
+				new Vertex( 5.0,-3.0 ),
+				new Vertex( 2.0,-6.0 ),
+				new Vertex( 10.0,-2.0 ),
+				new Vertex( 5.0,-8.0 ),
+				new Vertex( 6.0,-1.0 ),
+				new Vertex( 10.0,-5.0 ),
+				new Vertex( 9.0,-9.0 ),
+				new Vertex( 1.0,-4.0 ),
+				new Vertex( 2.0,-10.0 ),
+				new Vertex( 4.0,-7.0 )
+			};
+		n = 10;
+		for(i = 0; i < n; i++)
+		arr[i].setIndex(i);
+		vertices = new ArrayList<Vertex>(Arrays.asList(arr));
+		//################################################
 
 		System.out.println("\n Finding lowermost point");
 		int lowest_index = 0;
@@ -71,6 +96,8 @@ public class SimplePolygon {
 
 		DoublyConnectedEdgeList dcel = new DoublyConnectedEdgeList(vertices);
 		dcel.printInterior();
+
+		//Draw the simple polygon
 		DrawGraph mainPanel = new DrawGraph(dcel,n);
 		JFrame frame = new JFrame("DrawGraph");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -83,5 +110,13 @@ public class SimplePolygon {
 		MonotonePartition monPart = new MonotonePartition(dcel);
 		System.out.println("Reached line 84");
 
+		//Draw the trapezoidal lines
+		DrawTrapezoidalization trapezoidalPanel = new DrawTrapezoidalization(dcel,monPart.trapezoidalization(),n);
+		JFrame frameT = new JFrame("DrawTrapezoidalization");
+    frameT.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frameT.getContentPane().add(trapezoidalPanel);
+    frameT.pack();
+    frameT.setLocationByPlatform(true);
+    frameT.setVisible(true);
 	}
 }

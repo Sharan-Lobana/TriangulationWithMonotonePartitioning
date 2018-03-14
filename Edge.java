@@ -1,16 +1,30 @@
 public class Edge {
-	Vertex start_vertex;
-	Vertex end_vertex;
+	private Vertex start_vertex;
+	private Vertex end_vertex;
 
-	public Edge()
-	{
+	public Edge() {
 		start_vertex = null;
 		end_vertex = null;
 	}
 
-	public Edge(Vertex start_vertex, Vertex end_vertex)
-	{
+	public Edge(Vertex start_vertex, Vertex end_vertex) {
 		this.start_vertex = start_vertex;
+		this.end_vertex = end_vertex;
+	}
+
+	public Vertex start_vertex() {
+		return this.start_vertex;
+	}
+
+	public Vertex end_vertex() {
+		return this.end_vertex;
+	}
+
+	public void setStartVertex(Vertex start_vertex) {
+		this.start_vertex = start_vertex;
+	}
+
+	public void setEndVertex(Vertex end_vertex) {
 		this.end_vertex = end_vertex;
 	}
 }

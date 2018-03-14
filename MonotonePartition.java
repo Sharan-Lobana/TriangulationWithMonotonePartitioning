@@ -67,15 +67,20 @@ public class MonotonePartition {
 		DoublyConnectedEdgeList.DCEL_Edge e_next = v_i.IncidentEdge();
 
 		DoublyConnectedEdgeList.DCEL_Edge e_i, e_i_1, e_j, e_j_1;
+
+		e_next = v_i.IncidentEdge();
+		e_prev = e_next.prev();
+
+		e_i = e_next;
+		e_i_1 = e_prev;
+
 		double x1,x2;
 		DoublyConnectedEdgeList newDCEL;
 		switch (getVertexType(v_i)) {
 			case START:
-				e_i = v_i.IncidentEdge();
-				e_i_1 = v_i.IncidentEdge().prev();
 
-				System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
-				System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
+				// System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
+				// System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
 
 				T.add(e_i);
 				T.add(e_i_1);
@@ -85,11 +90,12 @@ public class MonotonePartition {
 				break;
 
 			case END:
-				e_i = v_i.IncidentEdge();
-				e_i_1 = v_i.IncidentEdge().prev();
+				// System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
+				// System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
+
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
-					newDCEL = partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+					newDCEL = partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_prev,e_next);
 					partition.put(newDCEL.id(), newDCEL);
 				}
 				T.remove(e_i);
@@ -105,12 +111,9 @@ public class MonotonePartition {
 				x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 				trapezoidalization.add(new Edge(new Vertex(x1,v_i.y()),new Vertex(x2,v_i.y())));
 
-				newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
+				newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_prev,e_next);
 				partition.put(newDCEL.id(), newDCEL);
 				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.SPLIT));
-
-				e_i = v_i.IncidentEdge();
-				e_i_1 = v_i.IncidentEdge().prev();
 
 				T.add(e_i);
 				T.add(e_i_1);
@@ -119,17 +122,16 @@ public class MonotonePartition {
 				break;
 
 			case MERGE:
-				e_i = v_i.IncidentEdge();
-				e_i_1 = v_i.IncidentEdge().prev();
-
-				System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
-				System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
+				// System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
+				// System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
 
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
 					DoublyConnectedEdgeList tempDCEL = partition.get(e_i_1.DCEL_id());
-					System.out.printf("hello%d\n",e_i_1.DCEL_id());
-					newDCEL = tempDCEL.connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+					
+					newDCEL = tempDCEL.connect(v_i,Helper.get(e_i_1.id()).getKey(),e_prev,e_next);
+					
+					e_prev = newDCEL.rep_edge();
 					partition.put(newDCEL.id(),newDCEL);
 				}
 				T.remove(e_i);
@@ -138,9 +140,7 @@ public class MonotonePartition {
 				e_j = T_Query(T,v_i,false);
 				e_j_1 = T_Query(T,v_i,true);
 
-				if(e_j == null)
-					System.out.printf("e_j is null\n");
-				
+				// System.out.printf("e_j_1: %d %f %f %f %f\n",e_j_1.id(),e_j_1.getNode(true).x(),e_j_1.getNode(true).y(),e_j_1.getNode(false).x(),e_j_1.getNode(false).y());
 
 				x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
 				x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
@@ -148,30 +148,28 @@ public class MonotonePartition {
 
 				if(Helper.get(e_j.id()).getValue() == VertexType.MERGE)
 				{
-					System.out.printf("e_j.DCEL_id: %d\n",e_j.DCEL_id());
-					newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
+					newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_prev,e_next);
 					partition.put(newDCEL.id(), newDCEL);
 				}
 				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.MERGE));
 				break;
 
 			case REGULAR:
-				e_i = v_i.IncidentEdge();
 				if(Math.atan2(e_i.next().origin().y()-e_i.origin().y(),e_i.next().origin().x()-e_i.origin().x()) < 0)
 				{
-					e_i_1 = v_i.IncidentEdge().prev();
 					if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 					{
-						newDCEL = partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+						newDCEL = partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_prev,e_next);
 						partition.put(newDCEL.id(), newDCEL);
 					}
 					T.remove(e_i_1);
 
 					e_j_1 = T_Query(T,v_i,true);
+					// System.out.printf("e_j_1: %d %f %f %f %f\n",e_j_1.id(),e_j_1.getNode(true).x(),e_j_1.getNode(true).y(),e_j_1.getNode(false).x(),e_j_1.getNode(false).y());
+
 					x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 					trapezoidalization.add(new Edge(new Vertex(v_i.x(),v_i.y()),new Vertex(x2,v_i.y())));
 
-					e_i = v_i.IncidentEdge();
 					T.add(e_i);
 					Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.REGULAR));
 				}
@@ -186,19 +184,17 @@ public class MonotonePartition {
 					e_j = T_Query(T,v_i,false);
 					if(Helper.get(e_j.id()).getValue() == VertexType.MERGE)
 					{
-						newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
+						newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_prev,e_next);
 						partition.put(newDCEL.id(), newDCEL);
 					}
 					Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.REGULAR));
 
-					e_i = v_i.IncidentEdge();
-					e_i_1 = v_i.IncidentEdge().prev();
 					T.add(e_i_1);
 				}
 				break;
 			}
-		for(DoublyConnectedEdgeList.DCEL_Edge e:T)
-			System.out.printf("edge in T: %f %f %f %f\n",e.getNode(true).x(),e.getNode(true).y(),e.getNode(false).x(),e.getNode(false).y());
+		// for(DoublyConnectedEdgeList.DCEL_Edge e:T)
+		// 	System.out.printf("edge in T: %f %f %f %f\n",e.getNode(true).x(),e.getNode(true).y(),e.getNode(false).x(),e.getNode(false).y());
 				
 		}
 
@@ -215,12 +211,12 @@ public class MonotonePartition {
 		DoublyConnectedEdgeList.Node prev = cur.IncidentEdge().prev().origin();
 		DoublyConnectedEdgeList.Node next = cur.IncidentEdge().next().origin();
 
-		System.out.printf("%f %f %f %f %f %f\n",prev.x(),prev.y(),cur.x(),cur.y(),next.x(),next.y());
+		// System.out.printf("%f %f %f %f %f %f\n",prev.x(),prev.y(),cur.x(),cur.y(),next.x(),next.y());
 
-		for(Integer key : partition.keySet() )
-		{
-			System.out.printf("KEY-VALUE: %d %f %f %f %f\n",key,partition.get(key).rep_edge().origin().x(),partition.get(key).rep_edge().origin().y(),partition.get(key).rep_edge().next().origin().x(),partition.get(key).rep_edge().next().origin().y());
-		}
+		// for(Integer key : partition.keySet() )
+		// {
+		// 	System.out.printf("KEY-VALUE: %d %f %f %f %f\n",key,partition.get(key).rep_edge().origin().x(),partition.get(key).rep_edge().origin().y(),partition.get(key).rep_edge().next().origin().x(),partition.get(key).rep_edge().next().origin().y());
+		// }
 
 		if (prev.y() < cur.y() &&
 			 next.y() < cur.y()) {
@@ -330,8 +326,8 @@ public class MonotonePartition {
 
 				if(Math.abs(th1 - th2) < 0.001)
 				{
-					System.out.printf("equality1: %f %f %f %f\n",e1.getNode(true).x(),e1.getNode(true).y(),e1.getNode(false).x(),e1.getNode(false).y());
-					System.out.printf("equality2: %f %f %f %f\n",e2.getNode(true).x(),e2.getNode(true).y(),e2.getNode(false).x(),e2.getNode(false).y());
+					// System.out.printf("equality1: %f %f %f %f\n",e1.getNode(true).x(),e1.getNode(true).y(),e1.getNode(false).x(),e1.getNode(false).y());
+					// System.out.printf("equality2: %f %f %f %f\n",e2.getNode(true).x(),e2.getNode(true).y(),e2.getNode(false).x(),e2.getNode(false).y());
 					return 0;
 				}
 

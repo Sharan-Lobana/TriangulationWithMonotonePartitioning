@@ -159,7 +159,6 @@ public class DoublyConnectedEdgeList {
       half_edge_1.setPrev(head);
       half_edge_1.setNext(head.next());
       half_edge_1.setTwin(half_edge_2);
-      half_edge_1.next().twin().setNext(half_edge_2);
       half_edge_1.setCounterClock(half_edge_1.prev().isCounterClock());
 
       half_edge_2.setOrigin(head.next().origin());
@@ -167,6 +166,12 @@ public class DoublyConnectedEdgeList {
       half_edge_2.setNext(head.twin());
       half_edge_2.setTwin(half_edge_1);
       half_edge_2.setCounterClock(half_edge_2.prev().isCounterClock());
+
+      head.next().setPrev(half_edge_1);
+      head.setNext(half_edge_1);
+
+      head.twin().prev().setNext(half_edge_2);
+      head.twin().setPrev(half_edge_2);
 
       head.setNext(half_edge_1);
       head.twin().setOrigin(a);
@@ -233,6 +238,7 @@ public class DoublyConnectedEdgeList {
       while(cur != e_b_a)
       {
         cur.setDCELID(newDCEL.id());
+        cur = cur.next();
       }
       return newDCEL;
     }

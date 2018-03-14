@@ -312,6 +312,7 @@ public class MonotonePartition {
 			if(Math.abs(midx - top1.x()) < 0.00001)
 			{
 				if(Math.abs(bot1.x() - bot2.x()) < 0.00001)	return 0;
+				if(bot1.x() > bot2.x())	return mul;
 				return -1*mul;
 			}
 

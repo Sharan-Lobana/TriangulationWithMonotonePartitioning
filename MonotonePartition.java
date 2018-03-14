@@ -25,12 +25,12 @@ public class MonotonePartition {
 			Q.add(cur_edge.origin());
 			cur_edge = cur_edge.next();
 		}while(cur_edge.id() != polygon.rep_edge().id());
-		
+
 		// Initializing the binary tree
 		this.Partition = new TreeMap<Integer,DoublyConnectedEdgeList>();
 		Partition.put(polygon.id(),polygon);
 		this.Trapezoidalization = new ArrayList<Edge>();
-		
+
 		TreeSet<DoublyConnectedEdgeList.DCEL_Edge> T = new TreeSet<DoublyConnectedEdgeList.DCEL_Edge>(new MonotoneEdgeComparator());
 
 		TreeMap<Integer, Pair<DoublyConnectedEdgeList.Node,VertexType> > Helper = new TreeMap<Integer, Pair<DoublyConnectedEdgeList.Node,VertexType> >();
@@ -39,13 +39,14 @@ public class MonotonePartition {
 			try {
 				handleVertex(Q.poll(), T, Helper);
 			} catch(Exception e) {
-				System.out.print("!");
+				e.printStackTrace();
+				break;
 			}
 		}
 	}
-	
+
 	private void handleVertex(DoublyConnectedEdgeList.Node v_i, TreeSet<DoublyConnectedEdgeList.DCEL_Edge> T, TreeMap<Integer, Pair<DoublyConnectedEdgeList.Node,VertexType> > Helper) {
-		
+
 
 		DoublyConnectedEdgeList.DCEL_Edge e_prev = v_i.IncidentEdge().prev();
 		DoublyConnectedEdgeList.DCEL_Edge e_next = v_i.IncidentEdge();
@@ -57,14 +58,14 @@ public class MonotonePartition {
 			case START:
 				e_i = v_i.IncidentEdge();
 				e_i_1 = v_i.IncidentEdge().prev();
-				
+
 				T.add(e_i);
 				T.add(e_i_1);
 
 				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.START));
 
 				break;
-			
+
 			case END:
 				e_i = v_i.IncidentEdge();
 				e_i_1 = v_i.IncidentEdge().prev();
@@ -75,7 +76,7 @@ public class MonotonePartition {
 				}
 				T.remove(e_i);
 				T.remove(e_i_1);
-				
+
 				break;
 
 			case SPLIT:
@@ -89,23 +90,25 @@ public class MonotonePartition {
 				newDCEL = Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
 				Partition.put(newDCEL.id(), newDCEL);
 				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.SPLIT));
-				
+
 				e_i = v_i.IncidentEdge();
 				e_i_1 = v_i.IncidentEdge().prev();
-				
+
 				T.add(e_i);
 				T.add(e_i_1);
-				
+
 				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.SPLIT));
 				break;
 
 			case MERGE:
 				e_i = v_i.IncidentEdge();
 				e_i_1 = v_i.IncidentEdge().prev();
-				
+
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
-					newDCEL = Partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
+					DoublyConnectedEdgeList tempDCEL = Partition.get(e_i_1.DCEL_id());
+					System.out.printf("hello%d\n",e_i_1.DCEL_id());
+					newDCEL = tempDCEL.connect(v_i,Helper.get(e_i_1.id()).getKey(),e_i_1,e_i_1.next());
 					Partition.put(newDCEL.id(),newDCEL);
 				}
 				T.remove(e_i);
@@ -125,7 +128,7 @@ public class MonotonePartition {
 				}
 				Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.MERGE));
 				break;
-			
+
 			case REGULAR:
 				e_i = v_i.IncidentEdge();
 				if(Math.atan2(e_i.next().origin().y()-e_i.origin().y(),e_i.next().origin().x()-e_i.origin().x()) < 0)
@@ -160,7 +163,7 @@ public class MonotonePartition {
 						newDCEL = Partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
 						Partition.put(newDCEL.id(), newDCEL);
 					}
-					Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.REGULAR));			
+					Helper.put(e_j.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.REGULAR));
 
 					e_i = v_i.IncidentEdge();
 					e_i_1 = v_i.IncidentEdge().prev();
@@ -179,25 +182,37 @@ public class MonotonePartition {
 	}
 
 	private VertexType getVertexType(DoublyConnectedEdgeList.Node cur) {
-		
+
 		DoublyConnectedEdgeList.Node prev = cur.IncidentEdge().prev().origin();
 		DoublyConnectedEdgeList.Node next = cur.IncidentEdge().next().origin();
+
+		System.out.printf("%f %f %f %f %f %f\n",prev.x(),prev.y(),cur.x(),cur.y(),next.x(),next.y());
+
+		for(Integer key : Partition.keySet() )
+		{
+			System.out.printf("KEY-VALUE: %d %f %f %f %f\n",key,Partition.get(key).rep_edge().origin().x(),Partition.get(key).rep_edge().origin().y(),Partition.get(key).rep_edge().next().origin().x(),Partition.get(key).rep_edge().next().origin().y());	
+		}
 
 		if (prev.y() < cur.y() &&
 			 next.y() < cur.y()) {
 			if (isConvex(cur)) {
+				System.out.printf("1\n");
 				return VertexType.START;
 			} else {
+				System.out.printf("2\n");
 				return VertexType.SPLIT;
 			}
 		} else if (prev.y() > cur.y() &&
 					next.y() > cur.y()) {
 			if (isConvex(cur)) {
+				System.out.printf("3\n");
 				return VertexType.END;
 			} else {
+				System.out.printf("4\n");
 				return VertexType.MERGE;
 			}
 		} else {
+			System.out.printf("5\n");
 			return VertexType.REGULAR;
 		}
 	}
@@ -234,20 +249,20 @@ public class MonotonePartition {
 	}
 
 	static class Diagonal {
-		
+
 		public Diagonal(int i1, int i2) {
 			index1 = i1;
 			index2 = i2;
 		}
-		
+
 		public int getA() {
 			return index1;
 		}
-		
+
 		public int getB() {
 			return index2;
 		}
-		
+
 		int index1, index2;
 	}
 	static class MonotoneVertexComparator implements Comparator<DoublyConnectedEdgeList.Node> {
@@ -256,7 +271,7 @@ public class MonotonePartition {
 		public int compare(DoublyConnectedEdgeList.Node v1, DoublyConnectedEdgeList.Node v2) {
 			if (v1.y() > v2.y())
 				return -1;
-			else 
+			else
 				return 1;
 		}
 	}
@@ -289,9 +304,9 @@ public class MonotonePartition {
 			}
 
 			if (midx > top1.x())
-				return mul;
-			else 
 				return -1*mul;
+			else
+				return mul;
 		}
 	}
 }

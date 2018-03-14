@@ -24,7 +24,7 @@ public class SimplePolygon {
 			while(tSet.contains(temp_y))
 			temp_y = rand.nextInt(n)+1;
 			tSet.add(temp_y);
-			vertices.get(i).setY(-1*(temp_y));
+			vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
 			vertices.get(i).setIndex(i);
 			System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
 		}
@@ -73,11 +73,15 @@ public class SimplePolygon {
 		dcel.printInterior();
 		DrawGraph mainPanel = new DrawGraph(dcel,n);
 		JFrame frame = new JFrame("DrawGraph");
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    frame.getContentPane().add(mainPanel);
-	    frame.pack();
-	    frame.setLocationByPlatform(true);
-	    frame.setVisible(true);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().add(mainPanel);
+    frame.pack();
+    frame.setLocationByPlatform(true);
+    frame.setVisible(true);
+
+		System.out.println("Reached line 82");
+		MonotonePartition monPart = new MonotonePartition(dcel);
+		System.out.println("Reached line 84");
 
 	}
 }

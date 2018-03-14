@@ -74,6 +74,9 @@ public class MonotonePartition {
 				e_i = v_i.IncidentEdge();
 				e_i_1 = v_i.IncidentEdge().prev();
 
+				System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
+				System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
+
 				T.add(e_i);
 				T.add(e_i_1);
 
@@ -119,6 +122,9 @@ public class MonotonePartition {
 				e_i = v_i.IncidentEdge();
 				e_i_1 = v_i.IncidentEdge().prev();
 
+				System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
+				System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
+
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
 					DoublyConnectedEdgeList tempDCEL = partition.get(e_i_1.DCEL_id());
@@ -132,12 +138,17 @@ public class MonotonePartition {
 				e_j = T_Query(T,v_i,false);
 				e_j_1 = T_Query(T,v_i,true);
 
+				if(e_j == null)
+					System.out.printf("e_j is null\n");
+				
+
 				x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
 				x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 				trapezoidalization.add(new Edge(new Vertex(x1,v_i.y()),new Vertex(x2,v_i.y())));
 
 				if(Helper.get(e_j.id()).getValue() == VertexType.MERGE)
 				{
+					System.out.printf("e_j.DCEL_id: %d\n",e_j.DCEL_id());
 					newDCEL = partition.get(e_j.DCEL_id()).connect(v_i,Helper.get(e_j.id()).getKey(),e_j,e_j.next());
 					partition.put(newDCEL.id(), newDCEL);
 				}
@@ -186,6 +197,9 @@ public class MonotonePartition {
 				}
 				break;
 			}
+		for(DoublyConnectedEdgeList.DCEL_Edge e:T)
+			System.out.printf("edge in T: %f %f %f %f\n",e.getNode(true).x(),e.getNode(true).y(),e.getNode(false).x(),e.getNode(false).y());
+				
 		}
 
 	static private enum VertexType {
@@ -309,10 +323,19 @@ public class MonotonePartition {
 
 			double midx = top2.x() + (bot2.x()-top2.x())*(top2.y()-top1.y())/(top2.y()-bot2.y());
 
-			if(Math.abs(midx - top1.x()) < 0.00001)
+			if(Math.abs(midx - top1.x()) < 0.0001)
 			{
-				if(Math.abs(bot1.x() - bot2.x()) < 0.00001)	return 0;
-				if(bot1.x() > bot2.x())	return mul;
+				double th1 = Math.atan2(bot1.y()-top1.y(),bot1.x()-top1.x());
+				double th2 = Math.atan2(bot2.y()-top2.y(),bot2.x()-top2.x());
+
+				if(Math.abs(th1 - th2) < 0.001)
+				{
+					System.out.printf("equality1: %f %f %f %f\n",e1.getNode(true).x(),e1.getNode(true).y(),e1.getNode(false).x(),e1.getNode(false).y());
+					System.out.printf("equality2: %f %f %f %f\n",e2.getNode(true).x(),e2.getNode(true).y(),e2.getNode(false).x(),e2.getNode(false).y());
+					return 0;
+				}
+
+				if(th1 > th2)	return mul;
 				return -1*mul;
 			}
 

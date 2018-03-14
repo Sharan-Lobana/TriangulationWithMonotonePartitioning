@@ -384,7 +384,7 @@ public class DoublyConnectedEdgeList {
         return this.id;
       }
       public int DCEL_id() {
-        return this.id;
+        return this.DCEL_id;
       }
 
 

@@ -31,8 +31,8 @@ public class DrawTrapezoidalization extends JPanel {
     this.n = n;
     this.partition = partition;
     this.trapezoidalization = trapezoidalization;
-    this.hor_mul= Math.min(40,(1000/n));
-    this.ver_mul=Math.min(40,(700/n));
+    this.hor_mul= Math.min(70,(1000/n));
+    this.ver_mul=Math.min(70,(700/n));
   }
 
    @Override

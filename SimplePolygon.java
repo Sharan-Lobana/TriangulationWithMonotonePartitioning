@@ -11,26 +11,26 @@ public class SimplePolygon {
 
 		int n,i;
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-		// //Random point generation from user input
-		// System.out.println("Please enter the number of points:\n");
-		// Scanner input = new Scanner(System.in);
-		// Random rand = new Random();
-		// n = input.nextInt();
-		// n = Math.min(n,MAX-1);
-		// System.out.println("The value of n entered is: "+Integer.toString(n));
-		// System.out.println("The vertices initialized are: ");
-		// TreeSet<Integer> tSet = new TreeSet<Integer>();
-		// for(i=0; i<n; i++){
-		// 	vertices.add(new Vertex());
-		// 	vertices.get(i).setX(rand.nextInt(n)+1);
-		// 	int temp_y = rand.nextInt(n)+1;
-		// 	while(tSet.contains(temp_y))
-		// 	temp_y = rand.nextInt(n)+1;
-		// 	tSet.add(temp_y);
-		// 	vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
-		// 	vertices.get(i).setIndex(i);
-		// 	System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
-		// }
+		//Random point generation from user input
+		System.out.println("Please enter the number of points:\n");
+		Scanner input = new Scanner(System.in);
+		Random rand = new Random();
+		n = input.nextInt();
+		n = Math.min(n,MAX-1);
+		System.out.println("The value of n entered is: "+Integer.toString(n));
+		System.out.println("The vertices initialized are: ");
+		TreeSet<Integer> tSet = new TreeSet<Integer>();
+		for(i=0; i<n; i++){
+			vertices.add(new Vertex());
+			vertices.get(i).setX(rand.nextInt(n)+1);
+			int temp_y = rand.nextInt(n)+1;
+			while(tSet.contains(temp_y))
+			temp_y = rand.nextInt(n)+1;
+			tSet.add(temp_y);
+			vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
+			vertices.get(i).setIndex(i);
+			System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
+		}
 
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -62,17 +62,17 @@ public class SimplePolygon {
 		// };
 		// n = 7;
 
-		//Test case 3: A diamond
-		Vertex[] arr = {
-			new Vertex(3.0,-1.0),
-			new Vertex(1.0,-2.0),
-			new Vertex(3.0,-5.0),
-			new Vertex(4.0,-4.0)
-		};
-		n=4;
-		for(i = 0; i < n; i++)
-		arr[i].setIndex(i);
-		vertices = new ArrayList<Vertex>(Arrays.asList(arr));
+		// //Test case 3: A diamond
+		// Vertex[] arr = {
+		// 	new Vertex(3.0,-1.0),
+		// 	new Vertex(1.0,-2.0),
+		// 	new Vertex(3.0,-5.0),
+		// 	new Vertex(4.0,-4.0)
+		// };
+		// n=4;
+		// for(i = 0; i < n; i++)
+		// arr[i].setIndex(i);
+		// vertices = new ArrayList<Vertex>(Arrays.asList(arr));
 		//################################################
 
 		System.out.println("\n Finding lowermost point");
@@ -138,38 +138,38 @@ public class SimplePolygon {
     frameT.setLocationByPlatform(true);
     frameT.setVisible(true);
 
-		ArrayList<DoublyConnectedEdgeList> monPolygons = new ArrayList<DoublyConnectedEdgeList>();
-		for(Integer k: monPart.partition().keySet()) {
-			monPolygons.add(monPart.partition().get(k));
-		}
-		MonotoneTriangulation monTriangulation = new MonotoneTriangulation(monPolygons);
-		ArrayList<DoublyConnectedEdgeList> triangulation = monTriangulation.triangulateMonotonePolygon();
-
-		System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
-		for(DoublyConnectedEdgeList tri: triangulation) {
-			System.out.printf("Triangle id: %d, rep_edge id: %d\n", tri.id(), tri.rep_edge().id());
-			System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
-		}
-		//Draw the traingulation of polygon obtained from triangulating monotone polygons
-		DrawTriangulation triangulationPanel = new DrawTriangulation(triangulation,n);
-		JFrame frameTri = new JFrame("DrawTriangulation");
-    frameTri.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frameTri.getContentPane().add(triangulationPanel);
-    frameTri.pack();
-    frameTri.setLocationByPlatform(true);
-    frameTri.setVisible(true);
-
-		DualGraph dualGraph = new DualGraph(triangulation);
-		dualGraph.construct();
-		TreeMap<Integer,ArrayList<Integer>> adjacencyList = dualGraph.getAdjacencyList();
-
-		//Draw the traingulation of polygon obtained from triangulating monotone polygons
-		DrawDualGraph dualPanel = new DrawDualGraph(triangulation,adjacencyList,n);
-		JFrame frameDual = new JFrame("DrawDualGraph");
-		frameDual.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frameDual.getContentPane().add(dualPanel);
-		frameDual.pack();
-		frameDual.setLocationByPlatform(true);
-		frameDual.setVisible(true);
+		// ArrayList<DoublyConnectedEdgeList> monPolygons = new ArrayList<DoublyConnectedEdgeList>();
+		// for(Integer k: monPart.partition().keySet()) {
+		// 	monPolygons.add(monPart.partition().get(k));
+		// }
+		// MonotoneTriangulation monTriangulation = new MonotoneTriangulation(monPolygons);
+		// ArrayList<DoublyConnectedEdgeList> triangulation = monTriangulation.triangulateMonotonePolygon();
+		//
+		// System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
+		// for(DoublyConnectedEdgeList tri: triangulation) {
+		// 	System.out.printf("Triangle id: %d, rep_edge id: %d\n", tri.id(), tri.rep_edge().id());
+		// 	System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
+		// }
+		// //Draw the traingulation of polygon obtained from triangulating monotone polygons
+		// DrawTriangulation triangulationPanel = new DrawTriangulation(triangulation,n);
+		// JFrame frameTri = new JFrame("DrawTriangulation");
+    // frameTri.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // frameTri.getContentPane().add(triangulationPanel);
+    // frameTri.pack();
+    // frameTri.setLocationByPlatform(true);
+    // frameTri.setVisible(true);
+		//
+		// DualGraph dualGraph = new DualGraph(triangulation);
+		// dualGraph.construct();
+		// TreeMap<Integer,ArrayList<Integer>> adjacencyList = dualGraph.getAdjacencyList();
+		//
+		// //Draw the traingulation of polygon obtained from triangulating monotone polygons
+		// DrawDualGraph dualPanel = new DrawDualGraph(triangulation,adjacencyList,n);
+		// JFrame frameDual = new JFrame("DrawDualGraph");
+		// frameDual.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// frameDual.getContentPane().add(dualPanel);
+		// frameDual.pack();
+		// frameDual.setLocationByPlatform(true);
+		// frameDual.setVisible(true);
 	}
 }

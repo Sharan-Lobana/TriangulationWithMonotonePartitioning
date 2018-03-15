@@ -183,6 +183,8 @@ public class MonotoneTriangulation {
           //Debug
           System.out.printf("\n^^^^^^^^^^Node pi with id: %d polled from PriorityQueue\n", pi.id());
 
+          ph = stack.peek();
+
           //if pi is adjacent to previous node
           if((isLeft.get(pi.id()) && isLeft.get(ph.id())) || (!isLeft.get(ph.id()) && !isLeft.get(pi.id()))) {
 

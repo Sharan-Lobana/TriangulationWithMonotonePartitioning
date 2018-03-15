@@ -29,8 +29,8 @@ public class DrawTriangulation extends JPanel {
   public DrawTriangulation(ArrayList<DoublyConnectedEdgeList> listOfTriangles, int n) {
     this.n = n;
     this.listOfTriangles = listOfTriangles;
-    this.hor_mul= Math.min(40,(1000/n));
-    this.ver_mul=Math.min(40,(700/n));
+    this.hor_mul= Math.min(70,(1000/n));
+    this.ver_mul=Math.min(70,(700/n));
   }
 
    @Override

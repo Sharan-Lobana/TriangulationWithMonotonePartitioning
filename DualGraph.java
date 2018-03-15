@@ -46,9 +46,9 @@ public class DualGraph {
 
       assert(temp.DCEL_id() == d.id());
       //Debug
-      System.out.printf("Currently finding neighbours for triangle with id: %d\n", temp.DCEL_id());
-      d.printInterior();
-      d.printVertices();
+      //System.out.printf("Currently finding neighbours for triangle with id: %d\n", temp.DCEL_id());
+      //d.printInterior();
+      //d.printVertices();
 
       do {
         for(int i=0;i<n;i++)
@@ -56,14 +56,15 @@ public class DualGraph {
           if(Math.abs(temp.origin().x() - vertices.get(i).x()) < 0.001 && Math.abs(temp.origin().y() - vertices.get(i).y()) < 0.001)
             temp.origin().setID(i+1);
         }
-        for(int ind2 = ind1+1; ind2 < listOfTriangles.size(); ind2++) {
+        for(int ind2 = 0; ind2 < listOfTriangles.size(); ind2++) {
+          if(ind1 == ind2)  continue;
           d2 = listOfTriangles.get(ind2);
           temp2 = d2.rep_edge();
 
           //Debug
-          System.out.printf("Current triangle for comparison is: %d\n", d2.id());
-          d2.printInterior();
-          d2.printVertices();
+          //System.out.printf("Current triangle for comparison is: %d\n", d2.id());
+          //d2.printInterior();
+          //d2.printVertices();
 
           if(temp.isEqualto(temp2) || temp.isEqualto(temp2.next()) || temp.isEqualto(temp2.prev())) {
             if(adjacencyList.containsKey(temp.DCEL_id()))

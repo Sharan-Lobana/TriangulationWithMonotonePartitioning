@@ -72,10 +72,9 @@ public class SimplePolygon {
 		// };
 		// n=4;
 
-
-		// for(i = 0; i < n; i++)
-		// arr[i].setIndex(i);
-		// vertices = new ArrayList<Vertex>(Arrays.asList(arr));
+		for(i = 0; i < n; i++)
+		arr[i].setIndex(i+1);
+		vertices = new ArrayList<Vertex>(Arrays.asList(arr));
 		//################################################
 
 		System.out.println("\n Finding lowermost point");
@@ -111,6 +110,11 @@ public class SimplePolygon {
 			}
 		});
 
+		for(i=0;i<n;i++)
+		{
+			vertices.get(i).setIndex(i+1);
+		}
+
 		System.out.println("The vertices after sorting w.r.t angle are: ");
 		for(i=0; i<n; i++){
 			System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" ), angle: "+Double.toString(vertices.get(i).angle()));
@@ -141,6 +145,10 @@ public class SimplePolygon {
 		DualGraph dualGraph = new DualGraph(triangulation,vertices);
 		dualGraph.construct();
 		TreeMap<Integer,ArrayList<Integer>> adjacencyList = dualGraph.getAdjacencyList();
+
+		ThreeColoring threeColoring = new ThreeColoring();
+
+		TreeMap<Integer,Integer> nodeColor = threeColoring.threeColor(triangulation,vertices);
 
 		//Draw the simple polygon
 		DrawGraph mainPanel = new DrawGraph(monPolygons,n);
@@ -185,6 +193,15 @@ public class SimplePolygon {
 		frameDual.pack();
 		frameDual.setLocationByPlatform(true);
 		frameDual.setVisible(true);
+
+		//Draw the traingulation of polygon obtained from triangulating monotone polygons
+		DrawThreeColoring threeColoringPanel = new DrawThreeColoring(triangulation,adjacencyList,n,nodeColor);
+		JFrame frameThreeColoring = new JFrame("DrawThreeColoring");
+		frameThreeColoring.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameThreeColoring.getContentPane().add(threeColoringPanel);
+		frameThreeColoring.pack();
+		frameThreeColoring.setLocationByPlatform(true);
+		frameThreeColoring.setVisible(true);
 
 	}
 }

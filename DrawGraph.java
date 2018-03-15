@@ -1,3 +1,7 @@
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// DrawGraph.java - This file is a utility code for rendering Simple Polygon GUI
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,8 +25,8 @@ public class DrawGraph extends JPanel {
   private static final double GRAPH_POINT_WIDTH = 12;
   private ArrayList<DoublyConnectedEdgeList> dcel_list;
   private int n;
-  private static double hor_mul = 1;
-  private static double ver_mul = 1;
+  private static double hor_mul = 1;  //horizontal multiplier for rendering
+  private static double ver_mul = 1;  //vertical multiplier for rendering
 
   public DrawGraph(ArrayList<DoublyConnectedEdgeList> dcel_list, int n) {
     this.n = n;
@@ -40,11 +44,11 @@ public class DrawGraph extends JPanel {
       Stroke oldStroke = g2.getStroke();
 
       for(DoublyConnectedEdgeList dcel: dcel_list) {
+
         //Draw the edges on the graph;
         g2.setStroke(GRAPH_STROKE);
         DoublyConnectedEdgeList.DCEL_Edge current = dcel.rep_edge();
         do {
-          // System.out.printf("Current Edge id is: %d\n", current.id());
           if(current.id() <= 2*n) {
             double x1 = current.origin().x();
             double y1 = current.origin().y()*(-1);
@@ -60,10 +64,9 @@ public class DrawGraph extends JPanel {
             double len = Math.sqrt(dx * dx + dy * dy);
             dx /= len;
             dy /= len;
-            //double slope = dx == 0 ? dy * 100000 : dy/dx;
 
-            double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));// + (int)(-slope * 20 * dx/Math.sqrt(dx * dx + dy * dy));
-            double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy))); //+ (int)(-slope * 20 * dy/Math.sqrt(dx * dx + dy * dy));
+            double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));
+            double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy)));
 
             String label = Integer.toString(current.id());
             g2.setColor(Color.red);
@@ -78,7 +81,6 @@ public class DrawGraph extends JPanel {
         g2.setStroke(oldStroke);
         current = dcel.rep_edge();
         do {
-          // System.out.printf("Current Edge id is: %d\n", current.id());
           if(current.id() <= 2*n) {
             g2.setColor(GRAPH_POINT_COLOR);
             double x = hor_mul*current.origin().x() - GRAPH_POINT_WIDTH/2;

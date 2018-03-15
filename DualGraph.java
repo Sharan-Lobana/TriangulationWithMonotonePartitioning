@@ -1,3 +1,8 @@
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// DualGraph.java - This file contains algorithm for constructing adjacencylist
+// representation of triangulation graph obtained from triangulation of monotone polygon
+
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -45,10 +50,6 @@ public class DualGraph {
       int temporary_id = temp.id();
 
       assert(temp.DCEL_id() == d.id());
-      //Debug
-      //System.out.printf("Currently finding neighbours for triangle with id: %d\n", temp.DCEL_id());
-      //d.printInterior();
-      //d.printVertices();
 
       do {
         for(int i=0;i<n;i++)
@@ -61,19 +62,12 @@ public class DualGraph {
           d2 = listOfTriangles.get(ind2);
           temp2 = d2.rep_edge();
 
-          //Debug
-          //System.out.printf("Current triangle for comparison is: %d\n", d2.id());
-          //d2.printInterior();
-          //d2.printVertices();
-
           if(temp.isEqualto(temp2) || temp.isEqualto(temp2.next()) || temp.isEqualto(temp2.prev())) {
             if(adjacencyList.containsKey(temp.DCEL_id()))
               tempList = adjacencyList.get(temp.DCEL_id());
             else
               tempList = new ArrayList<Integer>();
 
-            // //Debug
-            //System.out.printf("Added an edge between triangles with ids %d and %d\n",temp.DCEL_id(),temp2.DCEL_id());
             tempList.add(temp2.DCEL_id());
             adjacencyList.put(temp.DCEL_id(),tempList);
 

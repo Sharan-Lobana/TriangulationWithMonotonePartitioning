@@ -1,8 +1,12 @@
-import java.util.*;
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// ArtGalleryProblem.java - This file contains the main code for the project.
+// The entire flow of code can be determined from this file.
 
+import java.util.*;
 import javax.swing.JFrame;
 
-public class SimplePolygon {
+public class ArtGalleryProblem {
 
 	public static final int MAX = 1000;
 	public static final double EPSILON = 1e-4;
@@ -11,8 +15,6 @@ public class SimplePolygon {
 	public static void main(String[] args) {
 
 		int n,i;
-		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-
 		//Random point generation from user input
 		System.out.println("Please enter the number of points:\n");
 		Scanner input = new Scanner(System.in);
@@ -73,17 +75,18 @@ public class SimplePolygon {
 		// };
 		// n=4;
 
+		//Important: Uncomment the underlying code along with a single test case
+		// to avoid compilation errors
+
 		// for(i = 0; i < n; i++)
 		// arr[i].setIndex(i+1);
 		// vertices = new ArrayList<Vertex>(Arrays.asList(arr));
 		//################################################
 
-		System.out.println("\n Finding lowermost point");
 		int lowest_index = 0;
 		for(i=0; i<n; i++){
 			if(vertices.get(i).y() < vertices.get(lowest_index).y()){
 				lowest_index = i;
-				System.out.println("lowest_index updated to: "+Integer.toString(lowest_index));
 			}
 			else if(vertices.get(i).y() == vertices.get(lowest_index).y() && vertices.get(i).x() < vertices.get(lowest_index).x()){
 				lowest_index = i;
@@ -96,7 +99,6 @@ public class SimplePolygon {
 			tempy = vertices.get(i).y() - vertices.get(lowest_index).y();
 			length = Math.pow(Math.pow(tempx,2)+Math.pow(tempy,2),0.5);
 			vertices.get(i).setAngle(Math.acos(tempx/length));
-			System.out.println("Assigned angle for index i: "+Integer.toString(i)+" is: "+Double.toString(vertices.get(i).angle()));
 			vertices.get(i).setAngle(vertices.get(i).angle()*(-1.0));
 		}
 
@@ -116,41 +118,23 @@ public class SimplePolygon {
 			vertices.get(i).setIndex(i+1);
 		}
 
-		// //Debug
-		// System.out.println("The vertices after sorting w.r.t angle are: ");
-		// for(i=0; i<n; i++){
-		// 	System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" ), angle: "+Double.toString(vertices.get(i).angle()));
-		// }
-
 		DoublyConnectedEdgeList dcel = new DoublyConnectedEdgeList(vertices);
-		//dcel.printInterior();
-
 		MonotonePartition monPart = new MonotonePartition(dcel);
-
 		ArrayList<DoublyConnectedEdgeList> monPolygons = new ArrayList<DoublyConnectedEdgeList>();
+
 		for(Integer k: monPart.partition().keySet()) {
 			monPolygons.add(monPart.partition().get(k));
 		}
 
 		MonotoneTriangulation monTriangulation = new MonotoneTriangulation(monPolygons);
 		ArrayList<DoublyConnectedEdgeList> triangulation = monTriangulation.triangulateMonotonePolygon();
-
-		// //Debug
-		// System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
-		// for(DoublyConnectedEdgeList tri: triangulation) {
-		// 	System.out.printf("Triangle id: %d, rep_edge id: %d\n", tri.id(), tri.rep_edge().id());
-		// 	System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
-		// }
-
 		DualGraph dualGraph = new DualGraph(triangulation,vertices);
 		dualGraph.construct();
 		TreeMap<Integer,ArrayList<Integer>> adjacencyList = dualGraph.getAdjacencyList();
-
 		ThreeColoring threeColoring = new ThreeColoring();
-
 		TreeMap<Integer,Integer> nodeColor = threeColoring.threeColor(triangulation,vertices);
-
 		TreeMap<Integer,Integer> colorFreq = new TreeMap<Integer,Integer>();
+
 		for(Integer k: nodeColor.keySet()) {
 			if(colorFreq.containsKey(nodeColor.get(k)))
 				colorFreq.put(nodeColor.get(k),colorFreq.get(nodeColor.get(k))+1);
@@ -171,7 +155,7 @@ public class SimplePolygon {
 		}
 
 		long end_time=System.currentTimeMillis();
-		System.out.println("Time taken = "+(end_time-start_time));
+		System.out.println("Time taken = "+(end_time-start_time)+" ms");
 
 		//Draw the simple polygon
 		DrawGraph mainPanel = new DrawGraph(monPolygons,n);

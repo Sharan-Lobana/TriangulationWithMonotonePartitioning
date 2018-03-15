@@ -1,3 +1,7 @@
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// DrawDualGraph.java - This file is a utility code for rendering dual graph GUI
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,13 +24,13 @@ public class DrawDualGraph extends JPanel {
   private static final Color DUAL_GRAPH_COLOR = Color.orange; //Color for graph edge
   private static final Color TRAPEZOIDAL_COLOR = Color.green; //Color for trapezoidalization edges
   private static final Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180); //Color of graph node
-  private static final Stroke GRAPH_STROKE = new BasicStroke(1f);
-  private static final double GRAPH_POINT_WIDTH = 12;
-  private ArrayList<DoublyConnectedEdgeList> listOfTriangles;
-  private TreeMap<Integer,ArrayList<Integer>> adjacencyList;
-  private int n;
-  private static double hor_mul = 1;
-  private static double ver_mul = 1;
+  private static final Stroke GRAPH_STROKE = new BasicStroke(1f); //Line stroke width
+  private static final double GRAPH_POINT_WIDTH = 12; // Diameter of Node to be rendered
+  private ArrayList<DoublyConnectedEdgeList> listOfTriangles; //triangulation dcel
+  private TreeMap<Integer,ArrayList<Integer>> adjacencyList;  //adjacencyList representation
+  private int n;  //number of vertices in original simple polygon
+  private static double hor_mul = 1;  //horizontal multiplier for rendering
+  private static double ver_mul = 1;  //vertical multiplier for rendering
 
   public DrawDualGraph(ArrayList<DoublyConnectedEdgeList> listOfTriangles, TreeMap<Integer,ArrayList<Integer>> adjacencyList, int n) {
     this.listOfTriangles = listOfTriangles;
@@ -65,14 +69,11 @@ public class DrawDualGraph extends JPanel {
           double len = Math.sqrt(dx * dx + dy * dy);
           dx /= len;
           dy /= len;
-          //double slope = dx == 0 ? dy * 100000 : dy/dx;
 
-          double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));// + (int)(-slope * 20 * dx/Math.sqrt(dx * dx + dy * dy));
-          double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy))); //+ (int)(-slope * 20 * dy/Math.sqrt(dx * dx + dy * dy));
+          double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));
+          double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy)));
 
           String label = Integer.toString(current.id());
-          // g2.setColor(Color.red);
-          // g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
           g2.setColor(GRAPH_COLOR);
           g2.drawLine((int)Math.round(hor_mul*x1), (int)Math.round(ver_mul*y1), (int)Math.round(hor_mul*x2),(int)Math.round(ver_mul*y2));
 

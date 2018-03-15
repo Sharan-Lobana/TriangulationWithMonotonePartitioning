@@ -1,3 +1,8 @@
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// MonotonePartition.java - This file contains algorithm for partitioning a simple
+// polygon into monotone polygons using sweep line paradigm and trapezoidalization
+
 import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -78,21 +83,12 @@ public class MonotonePartition {
 		DoublyConnectedEdgeList newDCEL;
 		switch (getVertexType(v_i)) {
 			case START:
-
-				// System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
-				// System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
-
 				T.add(e_i);
 				T.add(e_i_1);
-
 				Helper.put(e_i.id(),new Pair<DoublyConnectedEdgeList.Node,VertexType>(v_i,VertexType.START));
-
 				break;
 
 			case END:
-				// System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
-				// System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
-
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
 					newDCEL = partition.get(e_i_1.DCEL_id()).connect(v_i,Helper.get(e_i_1.id()).getKey(),e_prev,e_next);
@@ -100,7 +96,6 @@ public class MonotonePartition {
 				}
 				T.remove(e_i);
 				T.remove(e_i_1);
-
 				break;
 
 			case SPLIT:
@@ -122,9 +117,6 @@ public class MonotonePartition {
 				break;
 
 			case MERGE:
-				// System.out.printf("e_i: %f %f %f %f\n",e_i.getNode(true).x(),e_i.getNode(true).y(),e_i.getNode(false).x(),e_i.getNode(false).y());
-				// System.out.printf("e_i_1: %f %f %f %f\n",e_i_1.getNode(true).x(),e_i_1.getNode(true).y(),e_i_1.getNode(false).x(),e_i_1.getNode(false).y());
-
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
 					DoublyConnectedEdgeList tempDCEL = partition.get(e_i_1.DCEL_id());
@@ -139,8 +131,6 @@ public class MonotonePartition {
 
 				e_j = T_Query(T,v_i,false);
 				e_j_1 = T_Query(T,v_i,true);
-
-				// System.out.printf("e_j_1: %d %f %f %f %f\n",e_j_1.id(),e_j_1.getNode(true).x(),e_j_1.getNode(true).y(),e_j_1.getNode(false).x(),e_j_1.getNode(false).y());
 
 				x1 = xQuery(e_j.getNode(true),e_j.getNode(false),v_i);
 				x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
@@ -165,7 +155,6 @@ public class MonotonePartition {
 					T.remove(e_i_1);
 
 					e_j_1 = T_Query(T,v_i,true);
-					// System.out.printf("e_j_1: %d %f %f %f %f\n",e_j_1.id(),e_j_1.getNode(true).x(),e_j_1.getNode(true).y(),e_j_1.getNode(false).x(),e_j_1.getNode(false).y());
 
 					x2 = xQuery(e_j_1.getNode(true),e_j_1.getNode(false),v_i);
 					trapezoidalization.add(new Edge(new Vertex(v_i.x(),v_i.y()),new Vertex(x2,v_i.y())));
@@ -193,9 +182,6 @@ public class MonotonePartition {
 				}
 				break;
 			}
-		// for(DoublyConnectedEdgeList.DCEL_Edge e:T)
-		// 	System.out.printf("edge in T: %f %f %f %f\n",e.getNode(true).x(),e.getNode(true).y(),e.getNode(false).x(),e.getNode(false).y());
-
 		}
 
 	static private enum VertexType {
@@ -210,34 +196,21 @@ public class MonotonePartition {
 
 		DoublyConnectedEdgeList.Node prev = cur.IncidentEdge().prev().origin();
 		DoublyConnectedEdgeList.Node next = cur.IncidentEdge().next().origin();
-
-		// System.out.printf("%f %f %f %f %f %f\n",prev.x(),prev.y(),cur.x(),cur.y(),next.x(),next.y());
-
-		// for(Integer key : partition.keySet() )
-		// {
-		// 	System.out.printf("KEY-VALUE: %d %f %f %f %f\n",key,partition.get(key).rep_edge().origin().x(),partition.get(key).rep_edge().origin().y(),partition.get(key).rep_edge().next().origin().x(),partition.get(key).rep_edge().next().origin().y());
-		// }
-
 		if (prev.y() < cur.y() &&
 			 next.y() < cur.y()) {
 			if (isConvex(cur)) {
-				//System.out.printf("1\n");
 				return VertexType.START;
 			} else {
-				//System.out.printf("2\n");
 				return VertexType.SPLIT;
 			}
 		} else if (prev.y() > cur.y() &&
 					next.y() > cur.y()) {
 			if (isConvex(cur)) {
-				//System.out.printf("3\n");
 				return VertexType.END;
 			} else {
-				//System.out.printf("4\n");
 				return VertexType.MERGE;
 			}
 		} else {
-			//System.out.printf("5\n");
 			return VertexType.REGULAR;
 		}
 	}
@@ -324,10 +297,7 @@ public class MonotonePartition {
 				double th1 = Math.atan2(bot1.y()-top1.y(),bot1.x()-top1.x());
 				double th2 = Math.atan2(bot2.y()-top2.y(),bot2.x()-top2.x());
 
-				if(Math.abs(th1 - th2) < 0.001)
-				{
-					// System.out.printf("equality1: %f %f %f %f\n",e1.getNode(true).x(),e1.getNode(true).y(),e1.getNode(false).x(),e1.getNode(false).y());
-					// System.out.printf("equality2: %f %f %f %f\n",e2.getNode(true).x(),e2.getNode(true).y(),e2.getNode(false).x(),e2.getNode(false).y());
+				if(Math.abs(th1 - th2) < 0.001) { 
 					return 0;
 				}
 

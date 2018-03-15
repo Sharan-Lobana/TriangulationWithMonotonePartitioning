@@ -1,3 +1,7 @@
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// DrawVertexGaurd.java - This file is utility for rendering the vertex guards in art gallery
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -73,14 +77,10 @@ public class DrawVertexGaurd extends JPanel {
           double len = Math.sqrt(dx * dx + dy * dy);
           dx /= len;
           dy /= len;
-          //double slope = dx == 0 ? dy * 100000 : dy/dx;
 
-          double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));// + (int)(-slope * 20 * dx/Math.sqrt(dx * dx + dy * dy));
-          double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy))); //+ (int)(-slope * 20 * dy/Math.sqrt(dx * dx + dy * dy));
-
+          double mx = (int)(hor_mul*(((x1 + x2)/2) + (0.15*dx)));
+          double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy)));
           String label = Integer.toString(current.id());
-          // g2.setColor(Color.red);
-          // g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
           g2.setColor(GRAPH_COLOR);
           g2.drawLine((int)Math.round(hor_mul*x1), (int)Math.round(ver_mul*y1), (int)Math.round(hor_mul*x2),(int)Math.round(ver_mul*y2));
 

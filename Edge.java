@@ -1,3 +1,7 @@
+// GroupID-21 (14114053_14114071) - Sharanpreet Singh & Vaibhav Gosain
+// Date: March 15, 2018
+// Edge.java - This file contains the (non-dcel) edge data structure used in simple polygon
+
 public class Edge {
 	private Vertex start_vertex;
 	private Vertex end_vertex;

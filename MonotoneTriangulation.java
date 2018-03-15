@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class MonotoneTriangulation {
-
+  private static final double EPSILON = 0.0001;
   private ArrayList<DoublyConnectedEdgeList> monotonePolygons;
 
   public MonotoneTriangulation() {
@@ -31,7 +31,14 @@ public class MonotoneTriangulation {
     y1 = b.y()-a.y();
     x2 = c.x()-b.x();
     y2 = c.y()-b.y();
-    double angle = Math.asin(2.0*(Math.abs(x1*y2-y1*x2))/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
+    double angle = Math.acos((x1*x2+y1*y2)/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
+
+    //Debug
+    System.out.printf("\nInside calculateAngleUtil\n");
+    System.out.printf("Node ids are a: %d, b: %d, c: %d\n", a.id(), b.id(), c.id());
+    System.out.printf("The coordinates for calculating angle are x1: %f, y1: %f, x2: %f, y2: %f\n", x1, y1, x2, y2);
+    System.out.printf("The angle so calculated is %f\n\n", angle);
+
     return angle;
   }
 
@@ -42,16 +49,28 @@ public class MonotoneTriangulation {
     y1 = b.y()-a.y();
     x2 = c.x()-b.x();
     y2 = c.y()-b.y();
-    double angle = Math.asin(2.0*(Math.abs(x1*y2-y1*x2))/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
-    if(x1*y2-y1*x2 < 0.0)
-    angle += Math.PI;
-    else if(x1*y2 == x2*y1) //TODO: double multiplication is doubtful, keep an epsilon
+
+    double angle = Math.acos((x1*x2+y1*y2)/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
+
+    //Debug
+    System.out.printf("\nInside calculateAngle\n");
+    System.out.printf("Node ids are a: %d, b: %d, c: %d\n", a.id(), b.id(), c.id());
+    System.out.printf("The coordinates for calculating angle are x1: %f, y1: %f, x2: %f, y2: %f\n", x1, y1, x2, y2);
+    System.out.printf("The angle so calculated is %f\n", angle);
+
+    if(Math.abs(x1*y2 - x2*y1) <= EPSILON)
     angle = Math.PI;
+    else if(x1*y2-y1*x2 < 0.0)
+    angle += Math.PI;
     else
     angle = Math.PI - angle;
 
+    //Debug
+    System.out.printf("The angle returned is %f\n\n", angle);
+
     return angle;
   }
+
   public ArrayList<DoublyConnectedEdgeList> triangulateMonotonePolygon() {
     ArrayList<DoublyConnectedEdgeList> listOfTriangles = new ArrayList<DoublyConnectedEdgeList>();
     if(this.monotonePolygons != null) {
@@ -59,6 +78,10 @@ public class MonotoneTriangulation {
 
         //initializations
         DoublyConnectedEdgeList.DCEL_Edge temp = monotoneDCEL.rep_edge();
+        //Debug
+        System.out.printf("Montone Polygon ID: %d\n", monotoneDCEL.id());
+        System.out.printf("Temp Edge ID: %d\n",temp.id());
+        System.out.printf("Temp Edge Origin ID: %d\n", temp.origin().id());
         DoublyConnectedEdgeList.DCEL_Edge topEdge = monotoneDCEL.rep_edge();
         DoublyConnectedEdgeList.Node top = temp.origin();
         temp = temp.next();
@@ -69,12 +92,14 @@ public class MonotoneTriangulation {
             top = temp.origin();
             topEdge = temp;
           }
+          temp = temp.next();
         }
 
+        //Debug
+        System.out.println("Exited first while loop");
         //For storing the information about location of nodes
         //i.e on left or right monotone chain
         TreeMap<Integer,Boolean> isLeft = new TreeMap<Integer,Boolean>();
-        //TODO: is Reflex status will change dynamically with the algorithm
         TreeMap<Integer,Boolean> isReflex = new TreeMap<Integer,Boolean>();
         temp = topEdge;
 
@@ -84,6 +109,10 @@ public class MonotoneTriangulation {
         isReflex.put(topEdge.origin().id(),false);
         interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
         temp = temp.next();
+
+        //Debug
+        System.out.printf("The interior angle of top node with ID: %d is: %f\n", temp.prev().origin().id(), interiorAngle.get(temp.prev().origin().id()));
+
         while(temp.origin().id() != topEdge.origin().id()) {
 
           if(temp.origin().y() > temp.next().origin().y()) {
@@ -92,6 +121,9 @@ public class MonotoneTriangulation {
           else {
             isLeft.put(temp.origin().id(),false);
           }
+
+          //Debug
+          System.out.printf("Computation for DCEL with id: %d", monotoneDCEL.id());
 
           //Calculate the interior angle
           interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
@@ -145,6 +177,10 @@ public class MonotoneTriangulation {
             while(!isReflex.get(ph.id())){
               tempNode = stack.peek();
               stack.pop();
+
+              //TODO:check the validity of this statement
+              if(stack.isEmpty())
+              break;
               ph = stack.peek();
               // diagonals.add(ph,pi);
               //Maintain counterclockwise nature of nodes
@@ -182,10 +218,13 @@ public class MonotoneTriangulation {
                   triangles.add(new DoublyConnectedEdgeList.Triangle(pi,prevRight,tempNode,DoublyConnectedEdgeList.DCEL_count()));
                   prevAngleNode = prevRight;
                 }
-                else {
+                //TODO: Check validity of the following statement
+                else if(!stack.isEmpty()){
                   triangles.add(new DoublyConnectedEdgeList.Triangle(pi,stack.peek(),tempNode,DoublyConnectedEdgeList.DCEL_count()));
                   prevAngleNode = stack.peek();
                 }
+                else
+                  prevAngleNode = null;
               }
 
               //angle change needs to be computed only once

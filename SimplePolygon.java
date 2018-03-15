@@ -138,7 +138,7 @@ public class SimplePolygon {
 			System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
 		}
 
-		DualGraph dualGraph = new DualGraph(triangulation);
+		DualGraph dualGraph = new DualGraph(triangulation,vertices);
 		dualGraph.construct();
 		TreeMap<Integer,ArrayList<Integer>> adjacencyList = dualGraph.getAdjacencyList();
 

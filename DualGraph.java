@@ -4,13 +4,16 @@ import java.util.TreeMap;
 public class DualGraph {
   private ArrayList<DoublyConnectedEdgeList> listOfTriangles;
   private TreeMap<Integer, ArrayList<Integer>> adjacencyList;
-
+  private ArrayList<Vertex> vertices;
+  private int n;
   public DualGraph() {
     this.listOfTriangles = new ArrayList<DoublyConnectedEdgeList>();
   }
 
-  public DualGraph(ArrayList<DoublyConnectedEdgeList> listOfTriangles) {
+  public DualGraph(ArrayList<DoublyConnectedEdgeList> listOfTriangles, ArrayList<Vertex> vertices) {
     this.listOfTriangles = listOfTriangles;
+    this.vertices = vertices;
+    n = vertices.size();
   }
 
   public ArrayList<DoublyConnectedEdgeList> getListOfTriangles() {
@@ -19,6 +22,11 @@ public class DualGraph {
 
   public TreeMap<Integer,ArrayList<Integer>> getAdjacencyList() {
     return this.adjacencyList;
+  }
+
+  public ArrayList<Vertex> vertices()
+  {
+    return this.vertices;
   }
 
   public void construct() {
@@ -43,6 +51,11 @@ public class DualGraph {
       d.printVertices();
 
       do {
+        for(int i=0;i<n;i++)
+        {
+          if(Math.abs(temp.origin().x() - vertices.get(i).x()) < 0.001 && Math.abs(temp.origin().y() - vertices.get(i).y()) < 0.001)
+            temp.origin().setID(i+1);
+        }
         for(int ind2 = ind1+1; ind2 < listOfTriangles.size(); ind2++) {
           d2 = listOfTriangles.get(ind2);
           temp2 = d2.rep_edge();

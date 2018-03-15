@@ -5,32 +5,33 @@ import javax.swing.JFrame;
 public class SimplePolygon {
 
 	public static final int MAX = 105;
+	public static final double EPSILON = 1e-4;
 	public static ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 
 	public static void main(String[] args) {
 
 		int n,i;
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-		// //Random point generation from user input
-		// System.out.println("Please enter the number of points:\n");
-		// Scanner input = new Scanner(System.in);
-		// Random rand = new Random();
-		// n = input.nextInt();
-		// n = Math.min(n,MAX-1);
-		// System.out.println("The value of n entered is: "+Integer.toString(n));
-		// System.out.println("The vertices initialized are: ");
-		// TreeSet<Integer> tSet = new TreeSet<Integer>();
-		// for(i=0; i<n; i++){
-		// 	vertices.add(new Vertex());
-		// 	vertices.get(i).setX(rand.nextInt(n)+1);
-		// 	int temp_y = rand.nextInt(n)+1;
-		// 	while(tSet.contains(temp_y))
-		// 	temp_y = rand.nextInt(n)+1;
-		// 	tSet.add(temp_y);
-		// 	vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
-		// 	vertices.get(i).setIndex(i);
-		// 	System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
-		// }
+		//Random point generation from user input
+		System.out.println("Please enter the number of points:\n");
+		Scanner input = new Scanner(System.in);
+		Random rand = new Random();
+		n = input.nextInt();
+		n = Math.min(n,MAX-1);
+		System.out.println("The value of n entered is: "+Integer.toString(n));
+		System.out.println("The vertices initialized are: ");
+		TreeSet<Integer> tSet = new TreeSet<Integer>();
+		for(i=0; i<n; i++){
+			vertices.add(new Vertex());
+			vertices.get(i).setX(rand.nextInt(n)+1);
+			int temp_y = rand.nextInt(n)+1;
+			while(tSet.contains(temp_y))
+			temp_y = rand.nextInt(n)+1;
+			tSet.add(temp_y);
+			vertices.get(i).setY(-1*(temp_y));	// operating in fourth quadrant for computation purposes
+			vertices.get(i).setIndex(i);
+			System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" )");
+		}
 
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
@@ -50,17 +51,17 @@ public class SimplePolygon {
 		// 	};
 		// n = 10;
 
-		//Test case 2: A monotone polygon
-		Vertex[] arr = {
-			new Vertex( 2.0, -1.0 ),
-			new Vertex( 1.0, -2.0 ),
-			new Vertex( 1.0, -6.0 ),
-			new Vertex( 2.0, -7.0 ),
-			new Vertex( 5.0, -5.0 ),
-			new Vertex( 4.0, -4.0 ),
-			new Vertex( 3.0, -3.0 )
-		};
-		n = 7;
+		// //Test case 2: A monotone polygon
+		// Vertex[] arr = {
+		// 	new Vertex( 2.0, -1.0 ),
+		// 	new Vertex( 1.0, -2.0 ),
+		// 	new Vertex( 1.0, -6.0 ),
+		// 	new Vertex( 2.0, -7.0 ),
+		// 	new Vertex( 5.0, -5.0 ),
+		// 	new Vertex( 4.0, -4.0 ),
+		// 	new Vertex( 3.0, -3.0 )
+		// };
+		// n = 7;
 
 		// //Test case 3: A diamond
 		// Vertex[] arr = {
@@ -72,9 +73,9 @@ public class SimplePolygon {
 		// n=4;
 
 
-		for(i = 0; i < n; i++)
-		arr[i].setIndex(i);
-		vertices = new ArrayList<Vertex>(Arrays.asList(arr));
+		// for(i = 0; i < n; i++)
+		// arr[i].setIndex(i);
+		// vertices = new ArrayList<Vertex>(Arrays.asList(arr));
 		//################################################
 
 		System.out.println("\n Finding lowermost point");
@@ -103,7 +104,9 @@ public class SimplePolygon {
 		// Sort according to edge angles
 		Collections.sort(vertices,new Comparator<Vertex>(){
 			public int compare(Vertex a,Vertex b){
-				return Double.compare(a.angle(), b.angle()) < 0 ? 1:-1;
+				if(Math.abs(a.angle()-b.angle()) < EPSILON)
+					return Double.compare(a.y(),b.y()) < 0.0 ? 1: -1;
+				return Double.compare(a.angle(), b.angle()) < 0.0 ? 1:-1;
 			}
 		});
 

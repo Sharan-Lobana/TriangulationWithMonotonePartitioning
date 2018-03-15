@@ -272,9 +272,14 @@ public class MonotoneTriangulation {
 
             System.out.printf("The node pi with id: %d isn't adjacent to previous node ph with id: %d on stack\n", pi.id(), ph.id());
             boolean angleChangeFlag = true;
+            DoublyConnectedEdgeList.Node nodeToBePushed = null;
             //add diagonals to the nodes in other sides
             while(stack.size() >= 2) {
               tempNode = stack.peek();
+
+              if(angleChangeFlag = true)
+                nodeToBePushed = tempNode;
+
               stack.pop();
 
               //Debug
@@ -348,6 +353,18 @@ public class MonotoneTriangulation {
               }
 
               DoublyConnectedEdgeList.incrementDCELCount();
+            }
+
+            //Debug
+            System.out.printf("Node with id %d will be popped out of stack\n", stack.peek().id());
+
+            stack.pop();
+
+            if(nodeToBePushed != null) {
+              stack.push(nodeToBePushed);
+
+              //Debug
+              System.out.printf("The nodeToBePushed with id: %d pushed onto the stack\n", nodeToBePushed.id());
             }
 
             stack.push(pi);

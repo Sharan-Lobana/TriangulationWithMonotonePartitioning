@@ -44,7 +44,7 @@ public class DrawGraph extends JPanel {
         g2.setStroke(GRAPH_STROKE);
         DoublyConnectedEdgeList.DCEL_Edge current = dcel.rep_edge();
         do {
-          System.out.printf("Current Edge id is: %d\n", current.id());
+          // System.out.printf("Current Edge id is: %d\n", current.id());
           if(current.id() <= 2*n) {
             double x1 = current.origin().x();
             double y1 = current.origin().y()*(-1);
@@ -78,7 +78,7 @@ public class DrawGraph extends JPanel {
         g2.setStroke(oldStroke);
         current = dcel.rep_edge();
         do {
-          System.out.printf("Current Edge id is: %d\n", current.id());
+          // System.out.printf("Current Edge id is: %d\n", current.id());
           if(current.id() <= 2*n) {
             g2.setColor(GRAPH_POINT_COLOR);
             double x = hor_mul*current.origin().x() - GRAPH_POINT_WIDTH/2;

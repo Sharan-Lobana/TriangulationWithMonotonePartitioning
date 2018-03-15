@@ -11,7 +11,7 @@ public class DoublyConnectedEdgeList {
     private static int DCEL_count = 0;  //number of DCELs
     private static int edge_count = 0;  //number of edges
     private static int node_count = 0;  //number of nodes
-    private static final double eps = 1e-4;
+    private static final double eps = 1e-4; //for floating point comparisons
 
     public DoublyConnectedEdgeList() {
         this.rep_edge = null;

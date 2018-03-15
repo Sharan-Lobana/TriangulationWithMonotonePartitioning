@@ -103,6 +103,75 @@ public class DoublyConnectedEdgeList {
       this.id = 0;
 
     }
+
+    public DoublyConnectedEdgeList(ArrayList<Vertex> nodes, int id) {
+      if(nodes.size() >= 3) {
+        this.id = id;
+        Node one = new Node(nodes.get(0));
+        Node two = new Node(nodes.get(1));
+        Node three = new Node(nodes.get(2));
+
+        DCEL_Edge hone1 = new DCEL_Edge(id);
+        DCEL_Edge hone2 = new DCEL_Edge(-1);
+        DCEL_Edge htwo1 = new DCEL_Edge(id);
+        DCEL_Edge htwo2 = new DCEL_Edge(-1);
+        DCEL_Edge hthree1 = new DCEL_Edge(id);
+        DCEL_Edge hthree2 = new DCEL_Edge(-1);
+
+        one.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(two.y()-one.y(),two.x()-one.x()),hone1));
+        // one.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(three.y()-one.y(),three.x()-one.x()),hthree2));
+        two.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(three.y()-two.y(),three.x()-two.x()),htwo1));
+        // two.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(one.y()-two.y(),one.x()-two.x()),hone2));
+        three.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(one.y()-three.y(),one.x()-three.x()),hthree1));
+        // three.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(two.y()-three.y(),two.x()-three.x()),htwo2));
+
+        hone1.setOrigin(one);
+        hone1.setNext(htwo1);
+        hone1.setPrev(hthree1);
+        hone1.setTwin(hone2);
+
+        hone2.setOrigin(two);
+        hone2.setNext(hthree2);
+        hone2.setPrev(hthree1);
+        hone2.setTwin(hone2);
+        hone2.setCounterClock(false);
+
+        htwo1.setOrigin(two);
+        htwo1.setNext(hthree1);
+        htwo1.setPrev(hone1);
+        htwo1.setTwin(htwo2);
+
+        htwo2.setOrigin(three);
+        htwo2.setNext(hone2);
+        htwo2.setPrev(hthree2);
+        htwo2.setTwin(htwo1);
+        htwo2.setCounterClock(false);
+
+        hthree1.setOrigin(three);
+        hthree1.setNext(hone1);
+        hthree1.setPrev(htwo1);
+        hthree1.setTwin(hthree2);
+
+        hthree2.setOrigin(one);
+        hthree2.setNext(htwo2);
+        hthree2.setPrev(hone2);
+        hthree2.setTwin(hthree1);
+        hthree2.setCounterClock(false);
+
+        this.setRepEdge(hthree1);
+        this.setID(id);
+
+        for(int i = 3; i < nodes.size(); i++) {
+          this.insert(new Node(nodes.get(i)));
+        }
+
+        return;
+      }
+      this.rep_edge = null;
+      this.id = 0;
+
+    }
+
     public DCEL_Edge rep_edge() {
       return this.rep_edge;
     }
@@ -285,8 +354,7 @@ public class DoublyConnectedEdgeList {
         }
 
         public Node(Vertex v) {
-          DoublyConnectedEdgeList.incrementNodeCount();
-          this.id = DoublyConnectedEdgeList.node_count();
+          this.id = v.index();
           this.x = v.x();
           this.y = v.y();
           this.IncidentEdges = new TreeSet<Pair<Double,DCEL_Edge> >(new IncidentEdgeComparator());
@@ -365,8 +433,8 @@ public class DoublyConnectedEdgeList {
       }
 
       public DCEL_Edge(int DCEL_id) {
-        DoublyConnectedEdgeList.incrementEdgeCount();;
-        this.id = DoublyConnectedEdgeList.edge_count() ;
+        DoublyConnectedEdgeList.incrementEdgeCount();
+        this.id = DoublyConnectedEdgeList.edge_count();
         this.DCEL_id = DCEL_id;
       }
 
@@ -524,7 +592,7 @@ public class DoublyConnectedEdgeList {
         nodes.add(first);
         nodes.add(second);
         nodes.add(third);
-        return new DoublyConnectedEdgeList(nodes);
+        return new DoublyConnectedEdgeList(nodes,this.id());
       }
 
       public void printTriangle() {

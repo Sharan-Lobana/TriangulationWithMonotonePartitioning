@@ -150,7 +150,7 @@ public class SimplePolygon {
     frame.pack();
     frame.setLocationByPlatform(true);
     frame.setVisible(true);
-		
+
 		//Draw the trapezoidal lines
 		DrawTrapezoidalization trapezoidalPanel = new DrawTrapezoidalization(monPart.partition(),monPart.trapezoidalization(),n);
 		JFrame frameT = new JFrame("DrawTrapezoidalization");
@@ -159,6 +159,14 @@ public class SimplePolygon {
     frameT.pack();
     frameT.setLocationByPlatform(true);
     frameT.setVisible(true);
+
+		DrawMonotonePartition monPanel = new DrawMonotonePartition(monPart.partition(),monPart.trapezoidalization(),n);
+		JFrame frameM = new JFrame("DrawMonotonePartition");
+    frameM.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frameM.getContentPane().add(monPanel);
+    frameM.pack();
+    frameM.setLocationByPlatform(true);
+    frameM.setVisible(true);
 
 		//Draw the traingulation of polygon obtained from triangulating monotone polygons
 		DrawTriangulation triangulationPanel = new DrawTriangulation(triangulation,n);

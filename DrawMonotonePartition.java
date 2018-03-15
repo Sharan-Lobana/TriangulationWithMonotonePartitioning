@@ -11,7 +11,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class DrawTrapezoidalization extends JPanel {
+public class DrawMonotonePartition extends JPanel {
 
   private static final double PREF_W = 800; //Preferred width
   private static final double PREF_H = 650; //Preferred height
@@ -27,7 +27,7 @@ public class DrawTrapezoidalization extends JPanel {
   private static double hor_mul = 1;
   private static double ver_mul = 1;
 
-  public DrawTrapezoidalization(TreeMap<Integer,DoublyConnectedEdgeList> partition, ArrayList<Edge> trapezoidalization, int n) {
+  public DrawMonotonePartition(TreeMap<Integer,DoublyConnectedEdgeList> partition, ArrayList<Edge> trapezoidalization, int n) {
     this.n = n;
     this.partition = partition;
     this.trapezoidalization = trapezoidalization;
@@ -72,8 +72,10 @@ public class DrawTrapezoidalization extends JPanel {
           String label = Integer.toString(current.id());
           g2.setColor(Color.red);
           g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
-          g2.setColor(GRAPH_COLOR);
           if(current.id() <= 2*n)
+            g2.setColor(GRAPH_COLOR);
+          else
+            g2.setColor(Color.red);
           g2.drawLine((int)Math.round(hor_mul*x1), (int)Math.round(ver_mul*y1), (int)Math.round(hor_mul*x2),(int)Math.round(ver_mul*y2));
 
           current = current.next();
@@ -100,6 +102,7 @@ public class DrawTrapezoidalization extends JPanel {
           current = current.next();
         } while(current != partition.get(id).rep_edge());
       }
+
       //Draw the horizontal parallel lines of Trapezoidalization
       g2.setStroke(GRAPH_STROKE);
       int trapCount = 0;
@@ -130,7 +133,6 @@ public class DrawTrapezoidalization extends JPanel {
         g2.setColor(Color.blue);
         g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
       }
-
    }
 
    @Override

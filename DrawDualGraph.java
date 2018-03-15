@@ -20,7 +20,7 @@ public class DrawDualGraph extends JPanel {
   private static final Color DUAL_GRAPH_COLOR = Color.orange; //Color for graph edge
   private static final Color TRAPEZOIDAL_COLOR = Color.green; //Color for trapezoidalization edges
   private static final Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180); //Color of graph node
-  private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
+  private static final Stroke GRAPH_STROKE = new BasicStroke(1f);
   private static final double GRAPH_POINT_WIDTH = 12;
   private ArrayList<DoublyConnectedEdgeList> listOfTriangles;
   private TreeMap<Integer,ArrayList<Integer>> adjacencyList;

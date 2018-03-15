@@ -52,7 +52,7 @@ public class DualGraph {
           d2.printInterior();
           d2.printVertices();
 
-          if(temp.isEqualto(temp2) || temp.isEqualto(temp2.next()) || temp2.isEqualto(temp2.prev())) {
+          if(temp.isEqualto(temp2) || temp.isEqualto(temp2.next()) || temp.isEqualto(temp2.prev())) {
             if(adjacencyList.containsKey(temp.DCEL_id()))
               tempList = adjacencyList.get(temp.DCEL_id());
             else

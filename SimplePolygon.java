@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 public class SimplePolygon {
 
-	public static final int MAX = 205;
+	public static final int MAX = 1000;
 	public static final double EPSILON = 1e-4;
 	public static ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 
@@ -116,16 +116,14 @@ public class SimplePolygon {
 			vertices.get(i).setIndex(i+1);
 		}
 
-		System.out.println("The vertices after sorting w.r.t angle are: ");
-		for(i=0; i<n; i++){
-			System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" ), angle: "+Double.toString(vertices.get(i).angle()));
-		}
-
-		long end_time=System.currentTimeMillis();
-		System.out.println("Time taken = "+(end_time-start_time));
+		// //Debug
+		// System.out.println("The vertices after sorting w.r.t angle are: ");
+		// for(i=0; i<n; i++){
+		// 	System.out.println("( "+Double.toString(vertices.get(i).x())+","+Double.toString(vertices.get(i).y())+" ), angle: "+Double.toString(vertices.get(i).angle()));
+		// }
 
 		DoublyConnectedEdgeList dcel = new DoublyConnectedEdgeList(vertices);
-		dcel.printInterior();
+		//dcel.printInterior();
 
 		MonotonePartition monPart = new MonotonePartition(dcel);
 
@@ -137,11 +135,12 @@ public class SimplePolygon {
 		MonotoneTriangulation monTriangulation = new MonotoneTriangulation(monPolygons);
 		ArrayList<DoublyConnectedEdgeList> triangulation = monTriangulation.triangulateMonotonePolygon();
 
-		System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
-		for(DoublyConnectedEdgeList tri: triangulation) {
-			System.out.printf("Triangle id: %d, rep_edge id: %d\n", tri.id(), tri.rep_edge().id());
-			System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
-		}
+		// //Debug
+		// System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
+		// for(DoublyConnectedEdgeList tri: triangulation) {
+		// 	System.out.printf("Triangle id: %d, rep_edge id: %d\n", tri.id(), tri.rep_edge().id());
+		// 	System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
+		// }
 
 		DualGraph dualGraph = new DualGraph(triangulation,vertices);
 		dualGraph.construct();
@@ -170,6 +169,9 @@ public class SimplePolygon {
 				break;
 			}
 		}
+
+		long end_time=System.currentTimeMillis();
+		System.out.println("Time taken = "+(end_time-start_time));
 
 		//Draw the simple polygon
 		DrawGraph mainPanel = new DrawGraph(monPolygons,n);

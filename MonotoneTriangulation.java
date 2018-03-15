@@ -33,11 +33,11 @@ public class MonotoneTriangulation {
     y2 = c.y()-b.y();
     double angle = Math.acos((x1*x2+y1*y2)/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
 
-    //Debug
-    System.out.printf("\nInside calculateAngleUtil\n");
-    System.out.printf("Node ids are a: %d, b: %d, c: %d\n", a.id(), b.id(), c.id());
-    System.out.printf("The coordinates for calculating angle are x1: %f, y1: %f, x2: %f, y2: %f\n", x1, y1, x2, y2);
-    System.out.printf("The angle so calculated is %f\n\n", angle);
+    // //Debug
+    // System.out.printf("\nInside calculateAngleUtil\n");
+    // System.out.printf("Node ids are a: %d, b: %d, c: %d\n", a.id(), b.id(), c.id());
+    // System.out.printf("The coordinates for calculating angle are x1: %f, y1: %f, x2: %f, y2: %f\n", x1, y1, x2, y2);
+    // System.out.printf("The angle so calculated is %f\n\n", angle);
 
     return angle;
   }
@@ -52,11 +52,11 @@ public class MonotoneTriangulation {
 
     double angle = Math.acos((x1*x2+y1*y2)/(Math.pow(x1*x1+y1*y1,0.5)*Math.pow(x2*x2+y2*y2,0.5)));
 
-    //Debug
-    System.out.printf("\nInside calculateAngle\n");
-    System.out.printf("Node ids are a: %d, b: %d, c: %d\n", a.id(), b.id(), c.id());
-    System.out.printf("The coordinates for calculating angle are x1: %f, y1: %f, x2: %f, y2: %f\n", x1, y1, x2, y2);
-    System.out.printf("The angle so calculated is %f\n", angle);
+    // //Debug
+    // System.out.printf("\nInside calculateAngle\n");
+    // System.out.printf("Node ids are a: %d, b: %d, c: %d\n", a.id(), b.id(), c.id());
+    // System.out.printf("The coordinates for calculating angle are x1: %f, y1: %f, x2: %f, y2: %f\n", x1, y1, x2, y2);
+    // System.out.printf("The angle so calculated is %f\n", angle);
 
     if(Math.abs(x1*y2 - x2*y1) <= EPSILON)
     angle = Math.PI;
@@ -65,8 +65,8 @@ public class MonotoneTriangulation {
     else
     angle = Math.PI - angle;
 
-    //Debug
-    System.out.printf("The angle returned is %f\n\n", angle);
+    // //Debug
+    // System.out.printf("The angle returned is %f\n\n", angle);
 
     return angle;
   }
@@ -78,10 +78,12 @@ public class MonotoneTriangulation {
 
         //initializations
         DoublyConnectedEdgeList.DCEL_Edge temp = monotoneDCEL.rep_edge();
-        //Debug
-        System.out.printf("Montone Polygon ID: %d\n", monotoneDCEL.id());
-        System.out.printf("Temp Edge ID: %d\n",temp.id());
-        System.out.printf("Temp Edge Origin ID: %d\n", temp.origin().id());
+
+        // //Debug
+        // System.out.printf("Montone Polygon ID: %d\n", monotoneDCEL.id());
+        // System.out.printf("Temp Edge ID: %d\n",temp.id());
+        // System.out.printf("Temp Edge Origin ID: %d\n", temp.origin().id());
+
         DoublyConnectedEdgeList.DCEL_Edge topEdge = monotoneDCEL.rep_edge();
         DoublyConnectedEdgeList.Node top = temp.origin();
         temp = temp.next();
@@ -95,8 +97,8 @@ public class MonotoneTriangulation {
           temp = temp.next();
         }
 
-        //Debug
-        System.out.println("Exited first while loop");
+        // //Debug
+        // System.out.println("Exited first while loop");
         //For storing the information about location of nodes
         //i.e on left or right monotone chain
         TreeMap<Integer,Boolean> isLeft = new TreeMap<Integer,Boolean>();
@@ -110,8 +112,8 @@ public class MonotoneTriangulation {
         interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
         temp = temp.next();
 
-        //Debug
-        System.out.printf("The interior angle of top node with ID: %d is: %f\n", temp.prev().origin().id(), interiorAngle.get(temp.prev().origin().id()));
+        // //Debug
+        // System.out.printf("The interior angle of top node with ID: %d is: %f\n", temp.prev().origin().id(), interiorAngle.get(temp.prev().origin().id()));
 
         while(temp.origin().id() != topEdge.origin().id()) {
 
@@ -122,8 +124,8 @@ public class MonotoneTriangulation {
             isLeft.put(temp.origin().id(),false);
           }
 
-          //Debug
-          System.out.printf("Computation for DCEL with id: %d", monotoneDCEL.id());
+          // //Debug
+          // System.out.printf("Computation for DCEL with id: %d", monotoneDCEL.id());
 
           //Calculate the interior angle
           interiorAngle.put(temp.origin().id(),calculateAngle(temp.prev().origin(),temp.origin(),temp.next().origin()));
@@ -138,11 +140,11 @@ public class MonotoneTriangulation {
           prev = current;
         }
 
-        //Debug
-        for(Integer ind: isLeft.keySet())
-        System.out.printf("Node id: %d, isLeft: %s\n", ind, isLeft.get(ind) == true? "true": "false");
-        for(Integer ind: isReflex.keySet())
-        System.out.printf("Node id: %d, isReflex: %s\n", ind, isReflex.get(ind) == true? "true": "false");
+        // //Debug
+        // for(Integer ind: isLeft.keySet())
+        // System.out.printf("Node id: %d, isLeft: %s\n", ind, isLeft.get(ind) == true? "true": "false");
+        // for(Integer ind: isReflex.keySet())
+        // System.out.printf("Node id: %d, isReflex: %s\n", ind, isReflex.get(ind) == true? "true": "false");
 
         PriorityQueue<DoublyConnectedEdgeList.Node> pQueue = new PriorityQueue<DoublyConnectedEdgeList.Node>(1, new MonotoneNodeComparator());
         temp = topEdge;
@@ -158,65 +160,67 @@ public class MonotoneTriangulation {
         DoublyConnectedEdgeList.Node ph,pi,tempNode; //ph is previous,pi is current
 
         ph = pQueue.poll();
-        //Debug
-        System.out.printf("Node ph with id: %d polled from PriorityQueue\n", ph.id());
+
+        // //Debug
+        // System.out.printf("Node ph with id: %d polled from PriorityQueue\n", ph.id());
 
         stack.push(ph);
 
-        //Debug
-        System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
+        // //Debug
+        // System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
 
         ph = pQueue.poll();
 
-        //Debug
-        System.out.printf("Node ph with id: %d polled from PriorityQueue\n", ph.id());
+        // //Debug
+        // System.out.printf("Node ph with id: %d polled from PriorityQueue\n", ph.id());
 
         stack.push(ph);
 
-        //Debug
-        System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
+        // //Debug
+        // System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
 
 
         while(!pQueue.isEmpty()) {
           pi = pQueue.poll();
 
-          //Debug
-          System.out.printf("\n^^^^^^^^^^Node pi with id: %d polled from PriorityQueue\n", pi.id());
+          // //Debug
+          // System.out.printf("\n^^^^^^^^^^Node pi with id: %d polled from PriorityQueue\n", pi.id());
 
           ph = stack.peek();
 
           //if pi is adjacent to previous node
           if((isLeft.get(pi.id()) && isLeft.get(ph.id())) || (!isLeft.get(ph.id()) && !isLeft.get(pi.id()))) {
 
-            //Debug
-            System.out.printf("Node pi with id: %d is adjacent to Node ph with id: %d\n", pi.id(), ph.id());
+            // //Debug
+            // System.out.printf("Node pi with id: %d is adjacent to Node ph with id: %d\n", pi.id(), ph.id());
 
 
             while(!isReflex.get(ph.id()) && stack.size() >= 2){
-              System.out.printf("Processing Stack because node ph with id: %d is not reflex\n", ph.id());
+
+              // //Debug
+              // System.out.printf("Processing Stack because node ph with id: %d is not reflex\n", ph.id());
 
               tempNode = stack.peek();
               stack.pop();
 
-              //Debug
-              System.out.printf("Node ph with id: %d popped out of stack to make tempNode\n", tempNode.id());
+              // //Debug
+              // System.out.printf("Node ph with id: %d popped out of stack to make tempNode\n", tempNode.id());
 
-              // //TODO:check the validity of this statement
-              // if(stack.isEmpty())
-              // break;
               ph = stack.peek();
-              System.out.printf("ph is now %d\n", ph.id());
-              // diagonals.add(ph,pi);
+
+              // //Debug
+              // System.out.printf("ph is now %d\n", ph.id());
+
               //Maintain counterclockwise nature of nodes
               if(isLeft.get(pi.id())){
                 triangles.add(new DoublyConnectedEdgeList.Triangle(pi,ph,tempNode,DoublyConnectedEdgeList.DCEL_count()));
-                System.out.printf("New triangle formed with number %d due to non reflex vertex on left side\n", triangles.size());
-                triangles.get(triangles.size()-1).printTriangle();
+                //System.out.printf("New triangle formed with number %d due to non reflex vertex on left side\n", triangles.size());
+                //triangles.get(triangles.size()-1).printTriangle();
               }
               else {
                 triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,ph,DoublyConnectedEdgeList.DCEL_count()));
-                System.out.printf("New triangle formed with number %d due to non reflex vertex on right side\n", triangles.size());
-                triangles.get(triangles.size()-1).printTriangle();
+                //System.out.printf("New triangle formed with number %d due to non reflex vertex on right side\n", triangles.size());
+                //triangles.get(triangles.size()-1).printTriangle();
               }
 
               //Update the interior angle of the vertex ph, works for both left and right vertices
@@ -224,41 +228,41 @@ public class MonotoneTriangulation {
                 double deltaAnglePh = Math.PI -calculateAngleUtil(pi,ph,tempNode);
                 interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-deltaAnglePh);
 
-                //Debug
-                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %f\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
+                // //Debug
+                // System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %f\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
 
                 double deltaAnglePi = Math.PI - deltaAnglePh - interiorAngle.get(tempNode.id());
                 interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
-                //Debug
-                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                // //Debug
+                // System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
 
               }else {
                 double deltaAnglePh = Math.PI -calculateAngleUtil(tempNode,ph,pi);
                 interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-deltaAnglePh);
 
-                //Debug
-                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %f\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
+                // //Debug
+                // System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %f\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
 
                 double deltaAnglePi = Math.PI - deltaAnglePh - interiorAngle.get(tempNode.id());
                 interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
-                //Debug
-                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                // //Debug
+                // System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
 
               }
               if(interiorAngle.get(ph.id()) <= (Math.PI - EPSILON)) {
                 isReflex.put(ph.id(),false);
 
-                //Debug
-                System.out.printf("Node ph with id %d is no longer reflex", ph.id());
+                // //Debug
+                // System.out.printf("Node ph with id %d is no longer reflex", ph.id());
               }
 
               if(interiorAngle.get(pi.id()) <= (Math.PI - EPSILON)) {
                 isReflex.put(pi.id(),false);
 
-                //Debug
-                System.out.printf("Node pi with id %d is no longer reflex", pi.id());
+                // //Debug
+                // System.out.printf("Node pi with id %d is no longer reflex", pi.id());
               }
 
 
@@ -267,12 +271,12 @@ public class MonotoneTriangulation {
 
             stack.push(pi);
 
-            //Debug
-            System.out.printf("Node pi with id: %d pushed onto stack\n", pi.id());
+            // //Debug
+            // System.out.printf("Node pi with id: %d pushed onto stack\n", pi.id());
           }
           else {
 
-            System.out.printf("The node pi with id: %d isn't adjacent to previous node ph with id: %d on stack\n", pi.id(), ph.id());
+            //System.out.printf("The node pi with id: %d isn't adjacent to previous node ph with id: %d on stack\n", pi.id(), ph.id());
             boolean angleChangeFlag = true;
             DoublyConnectedEdgeList.Node nodeToBePushed = null;
             //add diagonals to the nodes in other sides
@@ -284,22 +288,22 @@ public class MonotoneTriangulation {
 
               stack.pop();
 
-              //Debug
-              System.out.printf("tempNode popped out of stack and is now %d\n", tempNode.id());
+              // //Debug
+              // System.out.printf("tempNode popped out of stack and is now %d\n", tempNode.id());
 
               if(isLeft.get(pi.id())) {
                 triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,stack.peek(),DoublyConnectedEdgeList.DCEL_count()));
 
-                //Debug
-                System.out.printf("New triangle number %d formed by connecting pi: %d on the left with nodes %d and %d\n", triangles.size(), pi.id(), tempNode.id(), stack.peek().id());
-                triangles.get(triangles.size()-1).printTriangle();
+                // //Debug
+                // System.out.printf("New triangle number %d formed by connecting pi: %d on the left with nodes %d and %d\n", triangles.size(), pi.id(), tempNode.id(), stack.peek().id());
+                // triangles.get(triangles.size()-1).printTriangle();
               }
               else {
                 triangles.add(new DoublyConnectedEdgeList.Triangle(pi,stack.peek(),tempNode,DoublyConnectedEdgeList.DCEL_count()));
 
-                //Debug
-                System.out.printf("New triangle number %d formed by connecting pi: %d on the right with nodes %d and %d\n", triangles.size(), pi.id(), stack.peek().id(), tempNode.id());
-                triangles.get(triangles.size()-1).printTriangle();
+                // //Debug
+                // System.out.printf("New triangle number %d formed by connecting pi: %d on the right with nodes %d and %d\n", triangles.size(), pi.id(), stack.peek().id(), tempNode.id());
+                // triangles.get(triangles.size()-1).printTriangle();
 
               }
 
@@ -310,74 +314,74 @@ public class MonotoneTriangulation {
                   double deltaAngleTemp = Math.PI - calculateAngleUtil(pi,tempNode,stack.peek());
                   interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-deltaAngleTemp);
 
-                  //Debug
-                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %f\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
+                  // //Debug
+                  // System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %f\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
 
                   double deltaAnglePi = Math.PI - calculateAngleUtil(stack.peek(),pi,tempNode);
                   interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
-                  //Debug
-                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                  // //Debug
+                  // System.out.printf("Change in interior angle of pi %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
 
                 }
                 else {
                   double deltaAngleTemp = Math.PI - calculateAngleUtil(stack.peek(), tempNode, pi);
                   interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-deltaAngleTemp);
 
-                  //Debug
-                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %f\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
+                  // //Debug
+                  // System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %f\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
 
                   double deltaAnglePi = Math.PI - calculateAngleUtil(tempNode, pi, stack.peek());
                   interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
-                  //Debug
-                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                  // //Debug
+                  // System.out.printf("Change in interior angle of pi %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
                 }
 
                 if(interiorAngle.get(tempNode.id()) <= (Math.PI-EPSILON)) {
                   isReflex.put(tempNode.id(),false);
 
-                  //Debug
-                  System.out.printf("TempNode with id: %d is no longer reflex\n", tempNode.id());
+                  // //Debug
+                  // System.out.printf("TempNode with id: %d is no longer reflex\n", tempNode.id());
                 }
 
                 if(interiorAngle.get(pi.id()) <= (Math.PI-EPSILON)) {
                   isReflex.put(pi.id(),false);
 
-                  //Debug
-                  System.out.printf("Node pi with id: %d is no longer reflex\n", pi.id());
+                  // //Debug
+                  // System.out.printf("Node pi with id: %d is no longer reflex\n", pi.id());
                 }
 
                 angleChangeFlag = false;
 
-                //Debug
-                System.out.printf("The first angle change has been carried out, setting the flag to false\n");
+                // //Debug
+                // System.out.printf("The first angle change has been carried out, setting the flag to false\n");
               }
 
               DoublyConnectedEdgeList.incrementDCELCount();
             }
 
-            //Debug
-            System.out.printf("Node with id %d will be popped out of stack\n", stack.peek().id());
+            // //Debug
+            // System.out.printf("Node with id %d will be popped out of stack\n", stack.peek().id());
 
             stack.pop();
 
             if(nodeToBePushed != null) {
               stack.push(nodeToBePushed);
 
-              //Debug
-              System.out.printf("The nodeToBePushed with id: %d pushed onto the stack\n", nodeToBePushed.id());
+              // //Debug
+              // System.out.printf("The nodeToBePushed with id: %d pushed onto the stack\n", nodeToBePushed.id());
             }
 
             stack.push(pi);
 
-            //Debug
-            System.out.printf("The node pi with id: %d pushed onto the stack\n", pi.id());
+            // //Debug
+            // System.out.printf("The node pi with id: %d pushed onto the stack\n", pi.id());
 
             ph = pi;  //Update the previous node
 
-            //Debug
-            System.out.printf("The node ph has been updated to %d before the next iteration of adding edges to opposite side\n", ph.id());
+            // //Debug
+            // System.out.printf("The node ph has been updated to %d before the next iteration of adding edges to opposite side\n", ph.id());
           }
         }
 

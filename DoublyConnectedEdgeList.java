@@ -27,7 +27,8 @@ public class DoublyConnectedEdgeList {
       this.rep_edge = rep_edge;
       incrementDCELCount();
 
-      System.out.printf("%f %f %d\n",rep_edge.origin().x(),rep_edge.origin().y(),DCEL_count());
+      // //Debug
+      //System.out.printf("%f %f %d\n",rep_edge.origin().x(),rep_edge.origin().y(),DCEL_count());
 
       this.id = DCEL_count();
     }
@@ -201,7 +202,8 @@ public class DoublyConnectedEdgeList {
     }
 
     public static void incrementDCELCount() {
-      System.out.printf("YOYO-----------------------------------------------------------%d\n",DCEL_count);
+      // //Debug
+      //System.out.printf("YOYO-----------------------------------------------------------%d\n",DCEL_count);
       DCEL_count++;
     }
 

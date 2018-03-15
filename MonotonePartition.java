@@ -128,9 +128,9 @@ public class MonotonePartition {
 				if(Helper.get(e_i_1.id()).getValue() == VertexType.MERGE)
 				{
 					DoublyConnectedEdgeList tempDCEL = partition.get(e_i_1.DCEL_id());
-					
+
 					newDCEL = tempDCEL.connect(v_i,Helper.get(e_i_1.id()).getKey(),e_prev,e_next);
-					
+
 					e_prev = newDCEL.rep_edge();
 					partition.put(newDCEL.id(),newDCEL);
 				}
@@ -195,7 +195,7 @@ public class MonotonePartition {
 			}
 		// for(DoublyConnectedEdgeList.DCEL_Edge e:T)
 		// 	System.out.printf("edge in T: %f %f %f %f\n",e.getNode(true).x(),e.getNode(true).y(),e.getNode(false).x(),e.getNode(false).y());
-				
+
 		}
 
 	static private enum VertexType {
@@ -221,23 +221,23 @@ public class MonotonePartition {
 		if (prev.y() < cur.y() &&
 			 next.y() < cur.y()) {
 			if (isConvex(cur)) {
-				System.out.printf("1\n");
+				//System.out.printf("1\n");
 				return VertexType.START;
 			} else {
-				System.out.printf("2\n");
+				//System.out.printf("2\n");
 				return VertexType.SPLIT;
 			}
 		} else if (prev.y() > cur.y() &&
 					next.y() > cur.y()) {
 			if (isConvex(cur)) {
-				System.out.printf("3\n");
+				//System.out.printf("3\n");
 				return VertexType.END;
 			} else {
-				System.out.printf("4\n");
+				//System.out.printf("4\n");
 				return VertexType.MERGE;
 			}
 		} else {
-			System.out.printf("5\n");
+			//System.out.printf("5\n");
 			return VertexType.REGULAR;
 		}
 	}

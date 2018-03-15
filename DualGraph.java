@@ -72,7 +72,8 @@ public class DualGraph {
             else
               tempList = new ArrayList<Integer>();
 
-            System.out.printf("Added and edge between triangles with ids %d and %d\n",temp.DCEL_id(),temp2.DCEL_id());
+            // //Debug
+            //System.out.printf("Added an edge between triangles with ids %d and %d\n",temp.DCEL_id(),temp2.DCEL_id());
             tempList.add(temp2.DCEL_id());
             adjacencyList.put(temp.DCEL_id(),tempList);
 

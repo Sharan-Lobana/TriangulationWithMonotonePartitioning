@@ -77,8 +77,8 @@ public class DrawThreeColoring extends JPanel {
           double my = (int)(ver_mul*(((y1 + y2)/2) + (0.15*dy))); //+ (int)(-slope * 20 * dy/Math.sqrt(dx * dx + dy * dy));
 
           String label = Integer.toString(current.id());
-          g2.setColor(Color.red);
-          g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
+          // g2.setColor(Color.red);
+          // g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
           g2.setColor(GRAPH_COLOR);
           g2.drawLine((int)Math.round(hor_mul*x1), (int)Math.round(ver_mul*y1), (int)Math.round(hor_mul*x2),(int)Math.round(ver_mul*y2));
 
@@ -134,6 +134,21 @@ public class DrawThreeColoring extends JPanel {
           }
         }
       }
+
+      //Draw the nodes on the dual graph
+      g2.setStroke(oldStroke);
+      g2.setColor(Color.darkGray);
+      double ovalW = 0.75*GRAPH_POINT_WIDTH;
+      double ovalH = 0.75*GRAPH_POINT_WIDTH;
+      for(DoublyConnectedEdgeList triangle: listOfTriangles) {
+        Vertex centroid = triangleCentroids.get(triangle.id());
+        double x = hor_mul*centroid.x() - GRAPH_POINT_WIDTH*0.375;
+        double y = -1*ver_mul*centroid.y() - GRAPH_POINT_WIDTH*0.375;
+        g2.fillOval((int)Math.round(x), (int)Math.round(y), (int)Math.round(ovalW), (int)Math.round(ovalH));
+        String label = Integer.toString(triangle.id());
+        g2.drawString(label, (int)(x), (int)(y));
+      }
+
    }
 
    @Override

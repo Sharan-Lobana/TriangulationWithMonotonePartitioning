@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 
 public class SimplePolygon {
 
-	public static final int MAX = 105;
+	public static final int MAX = 205;
 	public static final double EPSILON = 1e-4;
 	public static ArrayList<Vertex> vertices = new ArrayList<Vertex>();
 
@@ -12,12 +12,13 @@ public class SimplePolygon {
 
 		int n,i;
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
 		//Random point generation from user input
 		System.out.println("Please enter the number of points:\n");
 		Scanner input = new Scanner(System.in);
 		Random rand = new Random();
 		n = input.nextInt();
-		n = Math.min(n,MAX-1);
+		n = Math.min(n,MAX);
 		System.out.println("The value of n entered is: "+Integer.toString(n));
 		System.out.println("The vertices initialized are: ");
 		TreeSet<Integer> tSet = new TreeSet<Integer>();
@@ -72,9 +73,9 @@ public class SimplePolygon {
 		// };
 		// n=4;
 
-		for(i = 0; i < n; i++)
-		arr[i].setIndex(i+1);
-		vertices = new ArrayList<Vertex>(Arrays.asList(arr));
+		// for(i = 0; i < n; i++)
+		// arr[i].setIndex(i+1);
+		// vertices = new ArrayList<Vertex>(Arrays.asList(arr));
 		//################################################
 
 		System.out.println("\n Finding lowermost point");
@@ -150,6 +151,26 @@ public class SimplePolygon {
 
 		TreeMap<Integer,Integer> nodeColor = threeColoring.threeColor(triangulation,vertices);
 
+		TreeMap<Integer,Integer> colorFreq = new TreeMap<Integer,Integer>();
+		for(Integer k: nodeColor.keySet()) {
+			if(colorFreq.containsKey(nodeColor.get(k)))
+				colorFreq.put(nodeColor.get(k),colorFreq.get(nodeColor.get(k))+1);
+			else
+				colorFreq.put(nodeColor.get(k),1);
+		}
+
+		Integer minFreq = n;
+		Integer minColor = 0;
+		for(Integer col: colorFreq.keySet()) {
+			minFreq = Math.min(minFreq,colorFreq.get(col));
+		}
+		for(Integer col: colorFreq.keySet()) {
+			if(colorFreq.get(col) == minFreq) {
+				minColor = col;
+				break;
+			}
+		}
+
 		//Draw the simple polygon
 		DrawGraph mainPanel = new DrawGraph(monPolygons,n);
 		JFrame frame = new JFrame("DrawGraph");
@@ -185,7 +206,7 @@ public class SimplePolygon {
 		frameTri.setLocationByPlatform(true);
 		frameTri.setVisible(true);
 
-		//Draw the traingulation of polygon obtained from triangulating monotone polygons
+		//Draw the dual graph of triangulation
 		DrawDualGraph dualPanel = new DrawDualGraph(triangulation,adjacencyList,n);
 		JFrame frameDual = new JFrame("DrawDualGraph");
 		frameDual.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -194,7 +215,7 @@ public class SimplePolygon {
 		frameDual.setLocationByPlatform(true);
 		frameDual.setVisible(true);
 
-		//Draw the traingulation of polygon obtained from triangulating monotone polygons
+		//Draw the three coloring of triangulation obtained from dfs on dual graph
 		DrawThreeColoring threeColoringPanel = new DrawThreeColoring(triangulation,adjacencyList,n,nodeColor);
 		JFrame frameThreeColoring = new JFrame("DrawThreeColoring");
 		frameThreeColoring.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -202,6 +223,15 @@ public class SimplePolygon {
 		frameThreeColoring.pack();
 		frameThreeColoring.setLocationByPlatform(true);
 		frameThreeColoring.setVisible(true);
+
+		//Draw the vertex gaurds as obtained from Fisk's theorem
+		DrawVertexGaurd vertexGaurdPanel = new DrawVertexGaurd(triangulation,adjacencyList,n,nodeColor,minColor);
+		JFrame frameVertexGaurd = new JFrame("DrawVertexGaurd");
+		frameVertexGaurd.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameVertexGaurd.getContentPane().add(vertexGaurdPanel);
+		frameVertexGaurd.pack();
+		frameVertexGaurd.setLocationByPlatform(true);
+		frameVertexGaurd.setVisible(true);
 
 	}
 }

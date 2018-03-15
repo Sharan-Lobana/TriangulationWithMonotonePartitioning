@@ -240,6 +240,10 @@ public class DoublyConnectedEdgeList {
         cur.setDCELID(newDCEL.id());
         cur = cur.next();
       }
+
+      a.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(b.y()-a.y(),b.x()-a.x()),e_a_b));
+      b.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(a.y()-b.y(),a.x()-b.x()),e_b_a));
+      
       return newDCEL;
     }
 

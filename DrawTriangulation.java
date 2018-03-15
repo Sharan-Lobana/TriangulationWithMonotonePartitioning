@@ -26,7 +26,7 @@ public class DrawTriangulation extends JPanel {
   private static double hor_mul = 1;
   private static double ver_mul = 1;
 
-  public DrawTriangulation(ArrayList<DoublyConnectedEdgeList> listOfTriangles) {
+  public DrawTriangulation(ArrayList<DoublyConnectedEdgeList> listOfTriangles, int n) {
     this.n = n;
     this.listOfTriangles = listOfTriangles;
     this.hor_mul=(1000/n);

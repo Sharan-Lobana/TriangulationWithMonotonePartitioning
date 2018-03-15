@@ -19,7 +19,7 @@ public class MonotoneTriangulation {
     y1 = two.y()-one.y(); //move a to origin such that we are concerned with coordinates of b only
     x2 = three.x()-two.x(); //move b to origin such that we are concerned with coordinates of c only
     y2 = three.y()-two.y(); //move b to origin such that we are concerned with coordinates of c only
-    if(x1*y2-x2*y1 < 0.0)
+    if((x1*y2-x2*y1) < 0.0)
       return true;
     return false;
   }
@@ -130,13 +130,19 @@ public class MonotoneTriangulation {
           current = temp.origin();
           temp = temp.next();
 
-          if(CCW(prev,current,temp.origin()))
-          isReflex.put(current.id(),false);
-          else
+          if(interiorAngle.get(current.id()) >= (Math.PI-EPSILON))
           isReflex.put(current.id(),true);
+          else
+          isReflex.put(current.id(),false);
 
           prev = current;
         }
+
+        //Debug
+        for(Integer ind: isLeft.keySet())
+        System.out.printf("Node id: %d, isLeft: %s\n", ind, isLeft.get(ind) == true? "true": "false");
+        for(Integer ind: isReflex.keySet())
+        System.out.printf("Node id: %d, isReflex: %s\n", ind, isReflex.get(ind) == true? "true": "false");
 
         PriorityQueue<DoublyConnectedEdgeList.Node> pQueue = new PriorityQueue<DoublyConnectedEdgeList.Node>(1, new MonotoneNodeComparator());
         temp = topEdge;
@@ -146,6 +152,7 @@ public class MonotoneTriangulation {
           pQueue.add(temp.origin());
           temp = temp.next();
         }
+
         Stack<DoublyConnectedEdgeList.Node> stack = new Stack<DoublyConnectedEdgeList.Node>();
         ArrayList<DoublyConnectedEdgeList.Triangle> triangles = new ArrayList<DoublyConnectedEdgeList.Triangle>();
         DoublyConnectedEdgeList.Node ph,pi,tempNode,prevLeft,prevRight; //ph is previous,pi is current
@@ -153,30 +160,63 @@ public class MonotoneTriangulation {
         prevRight = null;
 
         ph = pQueue.poll();
+        //Debug
+        System.out.printf("Node ph with id: %d polled from PriorityQueue\n", ph.id());
+
         stack.push(ph);
+
+        //Debug
+        System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
 
         //Update latest left and right nodes encountered before pi
         if(isLeft.get(ph.id()))
         prevLeft = ph;
         else
         prevRight = ph;
+
+        //Debug
+        System.out.printf("Node prevRight equals: %d and prevLeft equals %d\n", prevRight == null? -1:prevRight.id(), prevLeft == null?-1:prevLeft.id());
 
         ph = pQueue.poll();
+
+        //Debug
+        System.out.printf("Node ph with id: %d polled from PriorityQueue\n", ph.id());
+
         stack.push(ph);
+
+        //Debug
+        System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
 
         //Update latest left and right nodes encountered before pi
         if(isLeft.get(ph.id()))
         prevLeft = ph;
         else
         prevRight = ph;
+
+        //Debug
+        System.out.printf("Node prevRight equals: %d and prevLeft equals %d", prevRight == null? -1:prevRight.id(), prevLeft == null?-1:prevLeft.id());
 
         while(!pQueue.isEmpty()) {
           pi = pQueue.poll();
+
+          //Debug
+          System.out.printf("\n^^^^^^^^^^Node pi with id: %d polled from PriorityQueue\n", pi.id());
+
           //if pi is adjacent to previous node
-          if(isLeft.get(pi.id()) == isLeft.get(ph.id())) {
+          if((isLeft.get(pi.id()) && isLeft.get(ph.id())) || (!isLeft.get(ph.id()) && !isLeft.get(pi.id()))) {
+
+            //Debug
+            System.out.printf("Node pi with id: %d is adjacent to Node ph with id: %d\n", pi.id(), ph.id());
+
+
             while(!isReflex.get(ph.id())){
+              System.out.printf("Node ph with id: %d is not reflex\n", ph.id());
+
               tempNode = stack.peek();
               stack.pop();
+
+              //Debug
+              System.out.printf("Node ph with id: %d popped out of stack\n", tempNode.id());
 
               //TODO:check the validity of this statement
               if(stack.isEmpty())
@@ -196,6 +236,9 @@ public class MonotoneTriangulation {
               DoublyConnectedEdgeList.incrementDCELCount();
             }
             stack.push(pi);
+
+            //Debug
+            System.out.printf("Node pi with id: %d pushed onto stack\n", pi.id());
           }
           else {
             boolean angleChangeFlag = true;

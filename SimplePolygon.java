@@ -35,7 +35,7 @@ public class SimplePolygon {
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 		//##############################################
-		//Test case
+		//Test case 1: A non monotone polygon
 		Vertex[] arr = {
 				new Vertex( 5.0,-3.0 ),
 				new Vertex( 2.0,-6.0 ),
@@ -49,6 +49,19 @@ public class SimplePolygon {
 				new Vertex( 4.0,-7.0 )
 			};
 		n = 10;
+
+		// //Test case 2: A monotone polygon
+		// Vertex[] arr = {
+		// 	new Vertex( 2.0, -1.0 ),
+		// 	new Vertex( 1.0, -2.0 ),
+		// 	new Vertex( 1.0, -6.0 ),
+		// 	new Vertex( 2.0, -7.0 ),
+		// 	new Vertex( 5.0, -5.0 ),
+		// 	new Vertex( 4.0, -4.0 ),
+		// 	new Vertex( 3.0, -3.0 )
+		// };
+		// n = 7;
+
 		for(i = 0; i < n; i++)
 		arr[i].setIndex(i);
 		vertices = new ArrayList<Vertex>(Arrays.asList(arr));
@@ -124,9 +137,9 @@ public class SimplePolygon {
 		MonotoneTriangulation monTriangulation = new MonotoneTriangulation(monPolygons);
 		ArrayList<DoublyConnectedEdgeList> triangulation = monTriangulation.triangulateMonotonePolygon();
 
-		System.out.println("***********The size of triangulation is"+Integer.toString(triangulation.size()));
+		System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
 		//Draw the traingulation of polygon obtained from triangulating monotone polygons
-		DrawTriangulation triangulationPanel = new DrawTriangulation(triangulation);
+		DrawTriangulation triangulationPanel = new DrawTriangulation(triangulation,n);
 		JFrame frameTri = new JFrame("DrawTriangulation");
     frameTri.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frameTri.getContentPane().add(triangulationPanel);

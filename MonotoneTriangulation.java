@@ -242,26 +242,26 @@ public class MonotoneTriangulation {
                 interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-deltaAnglePh);
 
                 //Debug
-                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %l\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
+                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %f\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
 
                 double deltaAnglePi = Math.PI - deltaAnglePh - interiorAngle.get(tempNode.id());
                 interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
                 //Debug
-                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
 
               }else {
                 double deltaAnglePh = Math.PI -calculateAngleUtil(tempNode,ph,pi);
                 interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-deltaAnglePh);
 
                 //Debug
-                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %l\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
+                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %f\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
 
                 double deltaAnglePi = Math.PI - deltaAnglePh - interiorAngle.get(tempNode.id());
                 interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
                 //Debug
-                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
 
               }
               if(interiorAngle.get(ph.id()) <= (Math.PI - EPSILON)) {
@@ -323,13 +323,13 @@ public class MonotoneTriangulation {
                   interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-deltaAngleTemp);
 
                   //Debug
-                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %l\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
+                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %f\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
 
                   double deltaAnglePi = Math.PI - calculateAngleUtil(stack.peek(),pi,tempNode);
                   interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
                   //Debug
-                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
 
                 }
                 else {
@@ -337,13 +337,13 @@ public class MonotoneTriangulation {
                   interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-deltaAngleTemp);
 
                   //Debug
-                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %l\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
+                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %f\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
 
                   double deltaAnglePi = Math.PI - calculateAngleUtil(tempNode, pi, stack.peek());
                   interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
 
                   //Debug
-                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %f\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
                 }
 
                 if(interiorAngle.get(tempNode.id()) <= (Math.PI-EPSILON)) {
@@ -371,23 +371,16 @@ public class MonotoneTriangulation {
 
             stack.push(pi);
 
-            ph = pi;  //Update the previous node
-          }
+            //Debug
+            System.out.printf("The node pi with id: %d pushed onto the stack\n", pi.id());
 
-          //Update the latest left and right node encountered before pi
-          if(isLeft.get(pi.id()))
-          prevLeft = pi;
-          else
-          prevRight = pi;
+            ph = pi;  //Update the previous node
+
+            //Debug
+            System.out.printf("The node ph has been updated to %d before the next iteration of adding edges to opposite side\n", ph.id());
+          }
         }
 
-        // //TODO: check for cases when stack might not be empty and how to handle that
-        // if(!stack.isEmpty() && stack.size() > 1)
-        // {
-        //   pi = stack.pop();
-        //   ph = stack.pop();
-        //   //diagonals.add(ph,pi);
-        // }
         for(DoublyConnectedEdgeList.Triangle triangle: triangles) {
           listOfTriangles.add(triangle.convertToDCEL());
         }

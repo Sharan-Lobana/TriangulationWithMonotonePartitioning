@@ -155,9 +155,7 @@ public class MonotoneTriangulation {
 
         Stack<DoublyConnectedEdgeList.Node> stack = new Stack<DoublyConnectedEdgeList.Node>();
         ArrayList<DoublyConnectedEdgeList.Triangle> triangles = new ArrayList<DoublyConnectedEdgeList.Triangle>();
-        DoublyConnectedEdgeList.Node ph,pi,tempNode,prevLeft,prevRight; //ph is previous,pi is current
-        prevLeft = null;
-        prevRight = null;
+        DoublyConnectedEdgeList.Node ph,pi,tempNode; //ph is previous,pi is current
 
         ph = pQueue.poll();
         //Debug
@@ -167,15 +165,6 @@ public class MonotoneTriangulation {
 
         //Debug
         System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
-
-        //Update latest left and right nodes encountered before pi
-        if(isLeft.get(ph.id()))
-        prevLeft = ph;
-        else
-        prevRight = ph;
-
-        //Debug
-        System.out.printf("Node prevRight equals: %d and prevLeft equals %d\n", prevRight == null? -1:prevRight.id(), prevLeft == null?-1:prevLeft.id());
 
         ph = pQueue.poll();
 
@@ -187,14 +176,6 @@ public class MonotoneTriangulation {
         //Debug
         System.out.printf("Node ph with id: %d pushed onto stack\n", ph.id());
 
-        //Update latest left and right nodes encountered before pi
-        if(isLeft.get(ph.id()))
-        prevLeft = ph;
-        else
-        prevRight = ph;
-
-        //Debug
-        System.out.printf("Node prevRight equals: %d and prevLeft equals %d", prevRight == null? -1:prevRight.id(), prevLeft == null?-1:prevLeft.id());
 
         while(!pQueue.isEmpty()) {
           pi = pQueue.poll();

@@ -50,18 +50,26 @@ public class SimplePolygon {
 		// 	};
 		// n = 10;
 
-		//Test case 2: A monotone polygon
-		Vertex[] arr = {
-			new Vertex( 2.0, -1.0 ),
-			new Vertex( 1.0, -2.0 ),
-			new Vertex( 1.0, -6.0 ),
-			new Vertex( 2.0, -7.0 ),
-			new Vertex( 5.0, -5.0 ),
-			new Vertex( 4.0, -4.0 ),
-			new Vertex( 3.0, -3.0 )
-		};
-		n = 7;
+		// //Test case 2: A monotone polygon
+		// Vertex[] arr = {
+		// 	new Vertex( 2.0, -1.0 ),
+		// 	new Vertex( 1.0, -2.0 ),
+		// 	new Vertex( 1.0, -6.0 ),
+		// 	new Vertex( 2.0, -7.0 ),
+		// 	new Vertex( 5.0, -5.0 ),
+		// 	new Vertex( 4.0, -4.0 ),
+		// 	new Vertex( 3.0, -3.0 )
+		// };
+		// n = 7;
 
+		//Test case 3: A diamond
+		Vertex[] arr = {
+			new Vertex(3.0,-1.0),
+			new Vertex(1.0,-2.0),
+			new Vertex(3.0,-5.0),
+			new Vertex(4.0,-4.0)
+		};
+		n=4;
 		for(i = 0; i < n; i++)
 		arr[i].setIndex(i);
 		vertices = new ArrayList<Vertex>(Arrays.asList(arr));

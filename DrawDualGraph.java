@@ -32,8 +32,8 @@ public class DrawDualGraph extends JPanel {
     this.listOfTriangles = listOfTriangles;
     this.adjacencyList = adjacencyList;
     this.n = n;
-    this.hor_mul=(1000/n);
-    this.ver_mul=(700/n);
+    this.hor_mul= Math.min(40,(1000/n));
+    this.ver_mul= Math.min(40,(700/n));
   }
 
    @Override

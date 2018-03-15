@@ -35,32 +35,32 @@ public class SimplePolygon {
 		//$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 		//##############################################
-		//Test case 1: A non monotone polygon
-		Vertex[] arr = {
-				new Vertex( 5.0,-3.0 ),
-				new Vertex( 2.0,-6.0 ),
-				new Vertex( 10.0,-2.0 ),
-				new Vertex( 5.0,-8.0 ),
-				new Vertex( 6.0,-1.0 ),
-				new Vertex( 10.0,-5.0 ),
-				new Vertex( 9.0,-9.0 ),
-				new Vertex( 1.0,-4.0 ),
-				new Vertex( 2.0,-10.0 ),
-				new Vertex( 4.0,-7.0 )
-			};
-		n = 10;
-
-		// //Test case 2: A monotone polygon
+		// //Test case 1: A non monotone polygon
 		// Vertex[] arr = {
-		// 	new Vertex( 2.0, -1.0 ),
-		// 	new Vertex( 1.0, -2.0 ),
-		// 	new Vertex( 1.0, -6.0 ),
-		// 	new Vertex( 2.0, -7.0 ),
-		// 	new Vertex( 5.0, -5.0 ),
-		// 	new Vertex( 4.0, -4.0 ),
-		// 	new Vertex( 3.0, -3.0 )
-		// };
-		// n = 7;
+		// 		new Vertex( 5.0,-3.0 ),
+		// 		new Vertex( 2.0,-6.0 ),
+		// 		new Vertex( 10.0,-2.0 ),
+		// 		new Vertex( 5.0,-8.0 ),
+		// 		new Vertex( 6.0,-1.0 ),
+		// 		new Vertex( 10.0,-5.0 ),
+		// 		new Vertex( 9.0,-9.0 ),
+		// 		new Vertex( 1.0,-4.0 ),
+		// 		new Vertex( 2.0,-10.0 ),
+		// 		new Vertex( 4.0,-7.0 )
+		// 	};
+		// n = 10;
+
+		//Test case 2: A monotone polygon
+		Vertex[] arr = {
+			new Vertex( 2.0, -1.0 ),
+			new Vertex( 1.0, -2.0 ),
+			new Vertex( 1.0, -6.0 ),
+			new Vertex( 2.0, -7.0 ),
+			new Vertex( 5.0, -5.0 ),
+			new Vertex( 4.0, -4.0 ),
+			new Vertex( 3.0, -3.0 )
+		};
+		n = 7;
 
 		for(i = 0; i < n; i++)
 		arr[i].setIndex(i);
@@ -138,6 +138,10 @@ public class SimplePolygon {
 		ArrayList<DoublyConnectedEdgeList> triangulation = monTriangulation.triangulateMonotonePolygon();
 
 		System.out.println("***********The size of triangulation is: "+Integer.toString(triangulation.size()));
+		for(DoublyConnectedEdgeList tri: triangulation) {
+			System.out.printf("Triangle id: %d, rep_edge id: %d\n", tri.id(), tri.rep_edge().id());
+			System.out.printf("Origin x: %f, Origin y: %f\n", tri.rep_edge().origin().x(), tri.rep_edge().origin().y());
+		}
 		//Draw the traingulation of polygon obtained from triangulating monotone polygons
 		DrawTriangulation triangulationPanel = new DrawTriangulation(triangulation,n);
 		JFrame frameTri = new JFrame("DrawTriangulation");
@@ -146,5 +150,18 @@ public class SimplePolygon {
     frameTri.pack();
     frameTri.setLocationByPlatform(true);
     frameTri.setVisible(true);
+
+		DualGraph dualGraph = new DualGraph(triangulation);
+		dualGraph.construct();
+		TreeMap<Integer,ArrayList<Integer>> adjacencyList = dualGraph.getAdjacencyList();
+
+		//Draw the traingulation of polygon obtained from triangulating monotone polygons
+		DrawDualGraph dualPanel = new DrawDualGraph(triangulation,adjacencyList,n);
+		JFrame frameDual = new JFrame("DrawDualGraph");
+		frameDual.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frameDual.getContentPane().add(dualPanel);
+		frameDual.pack();
+		frameDual.setLocationByPlatform(true);
+		frameDual.setVisible(true);
 	}
 }

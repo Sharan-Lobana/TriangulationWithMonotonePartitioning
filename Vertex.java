@@ -24,7 +24,7 @@ public class Vertex {
 		this.y = a.y();
 		this.index = a.id();
 	}
-	
+
 	public double x() {
 		return this.x;
 	}
@@ -55,5 +55,9 @@ public class Vertex {
 
 	public void setAngle(double angle) {
 		this.angle = angle;
+	}
+
+	public String toString() {
+		return new String("x: "+Double.toString(x)+", y: "+Double.toString(y)+";");
 	}
 }

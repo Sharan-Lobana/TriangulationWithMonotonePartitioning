@@ -1,7 +1,9 @@
 import java.util.ArrayList;
+import java.util.TreeMap;
+
 public class DualGraph {
   private ArrayList<DoublyConnectedEdgeList> listOfTriangles;
-  private ArrayList<ArrayList<Integer>> adjacencyList;
+  private TreeMap<Integer, ArrayList<Integer>> adjacencyList;
 
   public DualGraph() {
     this.listOfTriangles = new ArrayList<DoublyConnectedEdgeList>();
@@ -15,7 +17,7 @@ public class DualGraph {
     return this.listOfTriangles;
   }
 
-  public ArrayList<ArrayList<Integer>> getAdjacencyList() {
+  public TreeMap<Integer,ArrayList<Integer>> getAdjacencyList() {
     return this.adjacencyList;
   }
 
@@ -24,26 +26,35 @@ public class DualGraph {
     int numberOfTriangles = listOfTriangles.size();
     DoublyConnectedEdgeList.DCEL_Edge temp;
     ArrayList<Integer> tempList;
-    this.adjacencyList = new ArrayList<ArrayList<Integer>>();
+    this.adjacencyList = new TreeMap<Integer,ArrayList<Integer>>();
 
-    for(int i = 0; i <= numberOfTriangles; i++) {
-      this.adjacencyList.add(new ArrayList<Integer>());
-    }
 
-    for(DoublyConnectedEdgeList d: listOfTriangles) {
+    for(int ind1 = 0; ind1 < listOfTriangles.size(); ind1++) {
+      DoublyConnectedEdgeList d = listOfTriangles.get(ind1);
+      DoublyConnectedEdgeList d2;
+      DoublyConnectedEdgeList.DCEL_Edge temp2;
       temp = d.rep_edge();
       int temporary_id = temp.id();
-
+      System.out.printf("Currently finding neighbours for triangle with id: %d\n", temp.DCEL_id());
       do {
-        if(temp.face().id() != DoublyConnectedEdgeList.DCEL_Face.INF && temp.twin().face().id() != DoublyConnectedEdgeList.DCEL_Face.INF) {
-          tempList = adjacencyList.get(temp.face().id());
-          tempList.add(temp.twin().face().id());
-          adjacencyList.set(temp.face().id(),tempList);
+        for(int ind2 = ind1+1; ind2 < listOfTriangles.size(); ind2++) {
+          d2 = listOfTriangles.get(ind2);
+          temp2 = d2.rep_edge();
+          if(temp.isEqualto(temp2) || temp.isEqualto(temp2.next()) || temp2.isEqualto(temp2.prev())) {
+            if(adjacencyList.containsKey(temp.DCEL_id()))
+              tempList = adjacencyList.get(temp.DCEL_id());
+            else
+              tempList = new ArrayList<Integer>();
+
+            System.out.printf("Added and edge between triangles with ids %d and %d\n",temp.DCEL_id(),temp2.DCEL_id());
+            tempList.add(temp2.DCEL_id());
+            adjacencyList.put(temp.DCEL_id(),tempList);
+
+          }
         }
         temp = temp.next();
       } while(temp.id() != temporary_id);
     }
-
   }
 
 }

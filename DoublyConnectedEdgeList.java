@@ -243,7 +243,7 @@ public class DoublyConnectedEdgeList {
 
       a.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(b.y()-a.y(),b.x()-a.x()),e_a_b));
       b.insertIncidentEdge(new Pair<Double, DCEL_Edge>(Math.atan2(a.y()-b.y(),a.x()-b.x()),e_b_a));
-      
+
       return newDCEL;
     }
 
@@ -304,8 +304,6 @@ public class DoublyConnectedEdgeList {
         public int id() {
           return this.id;
         }
-
-
 
         public void setID(int id) {
           this.id = id;
@@ -397,10 +395,10 @@ public class DoublyConnectedEdgeList {
         return this.DCEL_id;
       }
 
-
       public boolean isCounterClock() {
         return this.is_counter_clock;
       }
+
       public void setOrigin(Node origin) {
         this.origin = origin;
       }
@@ -437,6 +435,15 @@ public class DoublyConnectedEdgeList {
         }
         if(isTop) return this.next().origin();
         return this.origin();
+      }
+
+      public boolean isEqualto(DCEL_Edge b) {
+        boolean flag1 = ((Math.abs(this.origin().x()-b.origin().x()) <= eps) && (Math.abs(this.origin().y()-b.origin().y()) <= eps));
+        boolean flag2 = ((Math.abs(this.next().origin().x()-b.next().origin().x()) <= eps) && (Math.abs(this.next().origin().y()-b.next().origin().y()) <= eps));
+        boolean flag3 = ((Math.abs(this.origin().x()-b.next().origin().x()) <= eps) && (Math.abs(this.origin().y()-b.next().origin().y()) <= eps));
+        boolean flag4 = ((Math.abs(this.next().origin().x()-b.origin().x()) <= eps) && (Math.abs(this.next().origin().y()-b.origin().y()) <= eps));
+
+        return (flag1 && flag2) || (flag3 && flag4);
       }
     }
 
@@ -506,6 +513,10 @@ public class DoublyConnectedEdgeList {
         nodes.add(second);
         nodes.add(third);
         return new DoublyConnectedEdgeList(nodes);
+      }
+
+      public void printTriangle() {
+        System.out.printf("The triangle formed is %s, %s, %s\n",first.toString(), second.toString(), third.toString());
       }
     }
 

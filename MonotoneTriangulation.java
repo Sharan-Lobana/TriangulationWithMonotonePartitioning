@@ -209,83 +209,168 @@ public class MonotoneTriangulation {
             System.out.printf("Node pi with id: %d is adjacent to Node ph with id: %d\n", pi.id(), ph.id());
 
 
-            while(!isReflex.get(ph.id())){
-              System.out.printf("Node ph with id: %d is not reflex\n", ph.id());
+            while(!isReflex.get(ph.id()) && stack.size() >= 2){
+              System.out.printf("Processing Stack because node ph with id: %d is not reflex\n", ph.id());
 
               tempNode = stack.peek();
               stack.pop();
 
               //Debug
-              System.out.printf("Node ph with id: %d popped out of stack\n", tempNode.id());
+              System.out.printf("Node ph with id: %d popped out of stack to make tempNode\n", tempNode.id());
 
-              //TODO:check the validity of this statement
-              if(stack.isEmpty())
-              break;
+              // //TODO:check the validity of this statement
+              // if(stack.isEmpty())
+              // break;
               ph = stack.peek();
+              System.out.printf("ph is now %d\n", ph.id());
               // diagonals.add(ph,pi);
               //Maintain counterclockwise nature of nodes
-              if(isLeft.get(pi.id()))
+              if(isLeft.get(pi.id())){
                 triangles.add(new DoublyConnectedEdgeList.Triangle(pi,ph,tempNode,DoublyConnectedEdgeList.DCEL_count()));
-              else
+                System.out.printf("New triangle formed with number %d due to non reflex vertex on left side\n", triangles.size());
+                triangles.get(triangles.size()-1).printTriangle();
+              }
+              else {
                 triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,ph,DoublyConnectedEdgeList.DCEL_count()));
+                System.out.printf("New triangle formed with number %d due to non reflex vertex on right side\n", triangles.size());
+                triangles.get(triangles.size()-1).printTriangle();
+              }
 
               //Update the interior angle of the vertex ph, works for both left and right vertices
-              interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-(Math.PI -calculateAngleUtil(tempNode,ph,pi)));
-              if(interiorAngle.get(ph.id()) <= Math.PI)
+              if(isLeft.get(pi.id())){
+                double deltaAnglePh = Math.PI -calculateAngleUtil(pi,ph,tempNode);
+                interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-deltaAnglePh);
+
+                //Debug
+                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %l\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
+
+                double deltaAnglePi = Math.PI - deltaAnglePh - interiorAngle.get(tempNode.id());
+                interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
+
+                //Debug
+                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+
+              }else {
+                double deltaAnglePh = Math.PI -calculateAngleUtil(tempNode,ph,pi);
+                interiorAngle.put(ph.id(),interiorAngle.get(ph.id())-deltaAnglePh);
+
+                //Debug
+                System.out.printf("Change in interior angle of ph: %d is: %f and new angle is %l\n", ph.id(), deltaAnglePh,interiorAngle.get(ph.id()));
+
+                double deltaAnglePi = Math.PI - deltaAnglePh - interiorAngle.get(tempNode.id());
+                interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
+
+                //Debug
+                System.out.printf("Change in interior angle of pi: %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+
+              }
+              if(interiorAngle.get(ph.id()) <= (Math.PI - EPSILON)) {
                 isReflex.put(ph.id(),false);
+
+                //Debug
+                System.out.printf("Node ph with id %d is no longer reflex", ph.id());
+              }
+
+              if(interiorAngle.get(pi.id()) <= (Math.PI - EPSILON)) {
+                isReflex.put(pi.id(),false);
+
+                //Debug
+                System.out.printf("Node pi with id %d is no longer reflex", pi.id());
+              }
+
+
               DoublyConnectedEdgeList.incrementDCELCount();
             }
+
             stack.push(pi);
 
             //Debug
             System.out.printf("Node pi with id: %d pushed onto stack\n", pi.id());
           }
           else {
+
+            System.out.printf("The node pi with id: %d isn't adjacent to previous node ph with id: %d on stack\n", pi.id(), ph.id());
             boolean angleChangeFlag = true;
             //add diagonals to the nodes in other sides
-            while(!stack.isEmpty()) {
+            while(stack.size() >= 2) {
               tempNode = stack.peek();
               stack.pop();
+
+              //Debug
+              System.out.printf("tempNode popped out of stack and is now %d\n", tempNode.id());
+
               if(isLeft.get(pi.id())) {
-                if(stack.isEmpty() && prevLeft != null) {
-                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,prevLeft,DoublyConnectedEdgeList.DCEL_count()));
-                  prevAngleNode = prevLeft;
-                }
-                else {
-                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,stack.peek(),DoublyConnectedEdgeList.DCEL_count()));
-                  prevAngleNode = stack.peek();
-                }
+                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,tempNode,stack.peek(),DoublyConnectedEdgeList.DCEL_count()));
+
+                //Debug
+                System.out.printf("New triangle number %d formed by connecting pi: %d on the left with nodes %d and %d\n", triangles.size(), pi.id(), tempNode.id(), stack.peek().id());
+                triangles.get(triangles.size()-1).printTriangle();
               }
               else {
-                if(stack.isEmpty() && prevRight != null) {
-                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,prevRight,tempNode,DoublyConnectedEdgeList.DCEL_count()));
-                  prevAngleNode = prevRight;
-                }
-                //TODO: Check validity of the following statement
-                else if(!stack.isEmpty()){
-                  triangles.add(new DoublyConnectedEdgeList.Triangle(pi,stack.peek(),tempNode,DoublyConnectedEdgeList.DCEL_count()));
-                  prevAngleNode = stack.peek();
-                }
-                else
-                  prevAngleNode = null;
+                triangles.add(new DoublyConnectedEdgeList.Triangle(pi,stack.peek(),tempNode,DoublyConnectedEdgeList.DCEL_count()));
+
+                //Debug
+                System.out.printf("New triangle number %d formed by connecting pi: %d on the right with nodes %d and %d\n", triangles.size(), pi.id(), stack.peek().id(), tempNode.id());
+                triangles.get(triangles.size()-1).printTriangle();
+
               }
 
               //angle change needs to be computed only once
               if(angleChangeFlag) {
-                interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-(Math.PI - calculateAngleUtil(pi,tempNode,prevAngleNode)));
-                interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-(Math.PI - calculateAngleUtil(tempNode,pi,prevAngleNode)));
-                if(interiorAngle.get(tempNode.id()) <= Math.PI)
+
+                if(isLeft.get(pi.id())) {
+                  double deltaAngleTemp = Math.PI - calculateAngleUtil(pi,tempNode,stack.peek());
+                  interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-deltaAngleTemp);
+
+                  //Debug
+                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %l\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
+
+                  double deltaAnglePi = Math.PI - calculateAngleUtil(stack.peek(),pi,tempNode);
+                  interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
+
+                  //Debug
+                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+
+                }
+                else {
+                  double deltaAngleTemp = Math.PI - calculateAngleUtil(stack.peek(), tempNode, pi);
+                  interiorAngle.put(tempNode.id(),interiorAngle.get(tempNode.id())-deltaAngleTemp);
+
+                  //Debug
+                  System.out.printf("Change in interior angle of tempNode: %d is: %f and new angle is %l\n", tempNode.id(), deltaAngleTemp,interiorAngle.get(tempNode.id()));
+
+                  double deltaAnglePi = Math.PI - calculateAngleUtil(tempNode, pi, stack.peek());
+                  interiorAngle.put(pi.id(),interiorAngle.get(pi.id())-deltaAnglePi);
+
+                  //Debug
+                  System.out.printf("Change in interior angle of pi %d is: %f and new angle is %l\n", pi.id(), deltaAnglePi,interiorAngle.get(pi.id()));
+                }
+
+                if(interiorAngle.get(tempNode.id()) <= (Math.PI-EPSILON)) {
                   isReflex.put(tempNode.id(),false);
-                if(interiorAngle.get(pi.id()) <= Math.PI)
+
+                  //Debug
+                  System.out.printf("TempNode with id: %d is no longer reflex\n", tempNode.id());
+                }
+
+                if(interiorAngle.get(pi.id()) <= (Math.PI-EPSILON)) {
                   isReflex.put(pi.id(),false);
+
+                  //Debug
+                  System.out.printf("Node pi with id: %d is no longer reflex\n", pi.id());
+                }
+
                 angleChangeFlag = false;
+
+                //Debug
+                System.out.printf("The first angle change has been carried out, setting the flag to false\n");
               }
 
               DoublyConnectedEdgeList.incrementDCELCount();
             }
 
-            stack.push(ph);
             stack.push(pi);
+
             ph = pi;  //Update the previous node
           }
 

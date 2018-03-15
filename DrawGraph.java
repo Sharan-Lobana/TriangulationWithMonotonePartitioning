@@ -70,9 +70,8 @@ public class DrawGraph extends JPanel {
             g2.drawString(label, (int)Math.round(mx), (int)Math.round(my));
             g2.setColor(GRAPH_COLOR);
             g2.drawLine((int)Math.round(hor_mul*x1), (int)Math.round(ver_mul*y1), (int)Math.round(hor_mul*x2),(int)Math.round(ver_mul*y2));
-
-            current = current.next();
           }
+          current = current.next();
         } while(current != dcel.rep_edge());
 
         //Draw the vertices on the graph
@@ -91,9 +90,8 @@ public class DrawGraph extends JPanel {
             g2.drawString(label, (int)(x), (int)(y));
             g2.setColor(Color.blue);
             g2.drawString("( "+Double.toString(current.origin().x())+","+Double.toString(current.origin().y())+" )", (int)(x), (int)(y+20));
-
-            current = current.next();
           }
+          current = current.next();
         } while(current != dcel.rep_edge());
       }
 

@@ -150,7 +150,7 @@ public class SimplePolygon {
     frame.pack();
     frame.setLocationByPlatform(true);
     frame.setVisible(true);
-
+		
 		//Draw the trapezoidal lines
 		DrawTrapezoidalization trapezoidalPanel = new DrawTrapezoidalization(monPart.partition(),monPart.trapezoidalization(),n);
 		JFrame frameT = new JFrame("DrawTrapezoidalization");

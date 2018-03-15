@@ -117,7 +117,7 @@ public class DrawDualGraph extends JPanel {
             Vertex centroidA = triangleCentroids.get(triangle.id());
             Vertex centroidB = triangleCentroids.get(neighbour);
             g2.setColor(DUAL_GRAPH_COLOR);
-            g2.drawLine((int)Math.round(hor_mul*centroidA.x()), (int)Math.round(ver_mul*centroidA.y()), (int)Math.round(hor_mul*centroidB.x()),(int)Math.round(ver_mul*centroidB.y()));
+            g2.drawLine((int)Math.round(hor_mul*centroidA.x()), (int)Math.round(-1*ver_mul*centroidA.y()), (int)Math.round(hor_mul*centroidB.x()),(int)Math.round(-1*ver_mul*centroidB.y()));
           }
         }
       }

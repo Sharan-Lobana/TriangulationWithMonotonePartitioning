@@ -279,7 +279,7 @@ public class MonotoneTriangulation {
             while(stack.size() >= 2) {
               tempNode = stack.peek();
 
-              if(angleChangeFlag = true)
+              if(angleChangeFlag == true)
                 nodeToBePushed = tempNode;
 
               stack.pop();

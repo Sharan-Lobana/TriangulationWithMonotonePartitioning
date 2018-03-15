@@ -35,11 +35,23 @@ public class DualGraph {
       DoublyConnectedEdgeList.DCEL_Edge temp2;
       temp = d.rep_edge();
       int temporary_id = temp.id();
+
+      assert(temp.DCEL_id() == d.id());
+      //Debug
       System.out.printf("Currently finding neighbours for triangle with id: %d\n", temp.DCEL_id());
+      d.printInterior();
+      d.printVertices();
+
       do {
         for(int ind2 = ind1+1; ind2 < listOfTriangles.size(); ind2++) {
           d2 = listOfTriangles.get(ind2);
           temp2 = d2.rep_edge();
+
+          //Debug
+          System.out.printf("Current triangle for comparison is: %d\n", d2.id());
+          d2.printInterior();
+          d2.printVertices();
+
           if(temp.isEqualto(temp2) || temp.isEqualto(temp2.next()) || temp2.isEqualto(temp2.prev())) {
             if(adjacencyList.containsKey(temp.DCEL_id()))
               tempList = adjacencyList.get(temp.DCEL_id());
@@ -53,6 +65,8 @@ public class DualGraph {
           }
         }
         temp = temp.next();
+        assert(temp.DCEL_id() == d.id());
+
       } while(temp.id() != temporary_id);
     }
   }

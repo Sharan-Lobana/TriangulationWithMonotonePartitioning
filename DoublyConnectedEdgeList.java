@@ -203,6 +203,18 @@ public class DoublyConnectedEdgeList {
       System.out.println(Integer.toString(temp.origin.id()));
     }
 
+    public void printVertices() {
+      System.out.println("Printing vertices of dcel with id: "+Integer.toString(this.id));
+      DCEL_Edge temp = this.rep_edge();
+      DCEL_Edge temp2 = temp;
+      System.out.print("Vertices are: ("+Double.toString(temp2.origin().x())+","+Double.toString(temp2.origin().y())+")-->");
+      temp2 = temp2.next();
+      while(temp2.id() != temp.id()) {
+        System.out.print("("+Double.toString(temp2.origin().x())+","+Double.toString(temp2.origin().y())+")-->");
+        temp2 = temp2.next();
+      }
+      System.out.println("End");
+    }
 
     public DoublyConnectedEdgeList connect(Node a, Node b, DCEL_Edge e_prev, DCEL_Edge e_next) {
       DCEL_Edge e_a_b = new DCEL_Edge(this.id());
